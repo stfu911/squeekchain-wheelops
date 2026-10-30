@@ -775,10 +775,14 @@
       ctx.arc(centerX, centerY, outerRadius + 18, 0.2 * Math.PI, 0.8 * Math.PI);
       ctx.stroke();
 
-      // Precision Base mount
+      // Precision Base mount (with fallback for roundRect)
       ctx.fillStyle = '#cbd5e1';
       ctx.beginPath();
-      ctx.roundRect(centerX - 75, centerY + outerRadius + 12, 150, 10, 4);
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(centerX - 75, centerY + outerRadius + 12, 150, 10, 4);
+      } else {
+        ctx.rect(centerX - 75, centerY + outerRadius + 12, 150, 10);
+      }
       ctx.fill();
 
       // Outer Rim
@@ -878,11 +882,86 @@
       requestAnimationFrame(drawWheel);
     }
 
-    // --- Crypto SHA-256 Hashing ---
+    // --- Crypto SHA-256 Hashing (With Fallback for Non-HTTPS Environments) ---
+    function jsSha256(ascii) {
+      function rightRotate(value, amount) {
+        return (value >>> amount) | (value << (32 - amount));
+      }
+      var mathPow = Math.pow;
+      var maxWord = mathPow(2, 32);
+      var lengthProperty = 'length';
+      var i, j;
+      var result = '';
+      var words = [];
+      var asciiBitLength = ascii[lengthProperty] * 8;
+      var hash = [1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635, 1541459225];
+      var k = [
+        1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221,
+        3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580,
+        3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986,
+        2554220582, 2821834349, 2952996808, 3210303673, 3487588887, 3656430040, 3968282183, 61105499,
+        588015485, 844445242, 1006236637, 1222588557, 1410260408, 1693209954, 1987265377, 2172352823,
+        2293928044, 2470529626, 2697773206, 2751285485, 2975962074, 3078268034, 3280090450, 3441796393,
+        3641041044, 3764583475, 4073280150, 1554579, 40398204, 464280956, 521223023, 606927466,
+        960787965, 1220818979, 1311054152, 1400205548, 1537175655, 1565207469, 1696330451, 2268480396
+      ];
+      var isComposite = {};
+      ascii += '\x80';
+      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i);
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength | 0);
+      for (j = 0; j < words[lengthProperty];) {
+        var w = words.slice(j, j += 16);
+        var oldHash = hash;
+        hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          var i2 = i + j;
+          var w15 = w[i - 15], w2 = w[i - 2];
+          var a = hash[0], e = hash[4];
+          var temp1 = hash[7]
+            + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+            + ((e & hash[5]) ^ ((~e) & hash[6]))
+            + k[i]
+            + (w[i] = (i < 16) ? w[i] : (
+              w[i - 16]
+              + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+              + w[i - 7]
+              + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+            ) | 0
+          );
+          var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+            + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash);
+          hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) {
+          hash[i] = (hash[i] + oldHash[i]) | 0;
+        }
+      }
+      for (i = 0; i < 8; i++) {
+        for (i2 = 3; i2 >= 0; i2--) {
+          var c = (hash[i] >> (8 * i2)) & 255;
+          result += ((c < 16) ? '0' : '') + c.toString(16);
+        }
+      }
+      return result;
+    }
+
     async function computeSha256(str) {
-      const buf = new TextEncoder().encode(str);
-      const hash = await crypto.subtle.digest('SHA-256', buf);
-      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+      if (window.crypto && window.crypto.subtle && window.isSecureContext) {
+        try {
+          const buf = new TextEncoder().encode(str);
+          const hash = await crypto.subtle.digest('SHA-256', buf);
+          return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (e) {
+          return jsSha256(str);
+        }
+      }
+      return jsSha256(str);
     }
 
     // --- Block Engine ---
@@ -975,11 +1054,24 @@
     }
     document.getElementById('dnsVerifyBtn').addEventListener('click', openDnsModal);
 
+    // Close modal on click outside or Escape key
+    document.getElementById('dnsModal').addEventListener('click', (e) => {
+      if (e.target.id === 'dnsModal') closeDnsModal();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDnsModal();
+    });
+
     function copyDns() {
       const val = document.getElementById('dnsTxtToken').textContent;
       navigator.clipboard.writeText(val);
       logTerminal(`Copied TXT token: ${val}`, 'success');
-      alert("Copied Squeekchain TXT Record!");
+      const copyBtn = document.querySelector('#dnsModal .btn-primary');
+      if (copyBtn) {
+        const origText = copyBtn.textContent;
+        copyBtn.textContent = '✓ Copied to Clipboard!';
+        setTimeout(() => { copyBtn.textContent = origText; }, 2200);
+      }
     }
 
     // --- Init ---
