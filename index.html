@@ -7,22 +7,38 @@
   <meta name="description" content="Physical Proof-of-Work telemetry monitor and interactive consensus validator for Squeekchain.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0d10;
-      --surface: #12151b;
-      --surface-border: #1e232d;
-      --surface-hover: #191e27;
-      --text-main: #f0f2f5;
-      --text-muted: #7e8799;
-      --text-dim: #434b59;
-      --amber: #f59e0b;
-      --amber-glow: rgba(245, 158, 11, 0.18);
-      --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.15);
-      --red: #ef4444;
-      --cyan: #06b6d4;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+      
+      --brand: #d97706;
+      --brand-light: #fef3c7;
+      --brand-border: #fde68a;
+      --brand-dark: #b45309;
+
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --emerald-border: #a7f3d0;
+
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --blue-border: #bfdbfe;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
     }
 
     * {
@@ -34,218 +50,218 @@
     body {
       background-color: var(--bg);
       color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
       line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.05), transparent 45%),
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-      background-size: 100% 100%, 32px 32px, 32px 32px;
+        radial-gradient(circle at 100% 0%, rgba(217, 119, 6, 0.04), transparent 50%),
+        linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px, 24px 24px;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* Top Navigation */
     header {
-      border-bottom: 1px solid var(--surface-border);
-      background: rgba(11, 13, 16, 0.85);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 50;
-      padding: 12px 24px;
+      padding: 14px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .brand-group {
+    .brand-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .brand-tag {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-icon {
-      width: 24px;
-      height: 24px;
-      background: var(--amber);
-      color: #000;
-      border-radius: 4px;
+    .brand-badge {
+      width: 32px;
+      height: 32px;
+      background: var(--brand);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
       display: grid;
       place-items: center;
-      font-weight: 900;
-      font-size: 14px;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 2px 4px rgba(217, 119, 6, 0.25);
     }
 
-    .release-pill {
-      font-size: 10px;
-      padding: 2px 8px;
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 12px;
-      color: var(--amber);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
     }
 
-    .header-actions {
+    .brand-sub {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .tag-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 3px 8px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-controls {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
     .btn {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      padding: 7px 14px;
-      border-radius: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.15s ease;
-      border: 1px solid var(--surface-border);
+      border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text-main);
+      box-shadow: var(--shadow-sm);
     }
 
     .btn:hover {
-      background: var(--surface-hover);
-      border-color: var(--text-muted);
+      background: var(--surface-subtle);
+      border-color: var(--border-strong);
     }
 
     .btn-primary {
-      background: var(--amber);
-      color: #0b0d10;
-      border-color: var(--amber);
-      font-weight: 600;
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+      box-shadow: 0 1px 3px rgba(217, 119, 6, 0.3);
     }
 
     .btn-primary:hover {
-      background: #e69106;
-      border-color: #e69106;
-      color: #000;
-      box-shadow: 0 0 16px var(--amber-glow);
+      background: var(--brand-dark);
+      border-color: var(--brand-dark);
     }
 
-    .btn-audio {
-      width: 34px;
-      height: 34px;
+    .btn-icon {
+      width: 36px;
+      height: 36px;
       padding: 0;
       display: grid;
       place-items: center;
     }
 
-    /* Layout */
+    /* Main Container */
     main {
       flex: 1;
-      max-width: 1440px;
+      max-width: 1400px;
       width: 100%;
       margin: 0 auto;
-      padding: 24px;
+      padding: 28px;
       display: grid;
       grid-template-columns: 360px 1fr 340px;
-      gap: 20px;
+      gap: 24px;
     }
 
-    @media (max-width: 1180px) {
+    @media (max-width: 1200px) {
       main {
         grid-template-columns: 1fr;
       }
     }
 
-    .panel {
+    /* Cards & Panels */
+    .card {
       background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    .panel-header {
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.02);
-      border-bottom: 1px solid var(--surface-border);
+    .card-head {
+      padding: 14px 18px;
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
       color: var(--text-muted);
     }
 
-    .panel-body {
-      padding: 16px;
+    .card-body {
+      padding: 20px;
       flex: 1;
     }
 
-    /* Wheel Stage */
-    .wheel-container {
+    /* Wheel & Physical Consensus */
+    .wheel-stage {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-      position: relative;
+      padding: 16px 0;
     }
 
     #wheelCanvas {
-      width: 260px;
-      height: 260px;
-      filter: drop-shadow(0 0 24px var(--amber-glow));
+      width: 250px;
+      height: 250px;
     }
 
-    .rpm-display {
-      margin-top: 16px;
+    .rpm-container {
+      margin-top: 14px;
       text-align: center;
     }
 
-    .rpm-number {
-      font-size: 38px;
-      font-weight: 700;
-      font-family: 'Space Grotesk', sans-serif;
-      color: var(--amber);
-      letter-spacing: -0.03em;
+    .rpm-display {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      letter-spacing: -0.04em;
       line-height: 1;
+      font-variant-numeric: tabular-nums;
     }
 
-    .rpm-label {
+    .rpm-caption {
       font-size: 11px;
-      color: var(--text-muted);
+      font-weight: 600;
       text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
       margin-top: 4px;
     }
 
-    .controls-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 20px;
+    .throttle-btn {
       width: 100%;
-    }
-
-    .sprint-button {
-      grid-column: span 2;
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid var(--amber);
-      color: var(--amber);
-      padding: 14px;
-      border-radius: 6px;
+      margin-top: 18px;
+      background: var(--brand-light);
+      border: 1px solid var(--brand-border);
+      color: var(--brand-dark);
+      padding: 12px;
+      border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
@@ -253,194 +269,215 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.1s ease;
+      transition: all 0.12s ease;
       user-select: none;
     }
 
-    .sprint-button:active {
-      background: var(--amber);
-      color: #0b0d10;
-      transform: scale(0.98);
+    .throttle-btn:hover {
+      background: #fde68a;
     }
 
-    /* Telemetry gauges */
-    .metric-list {
+    .throttle-btn:active {
+      transform: scale(0.99);
+      background: var(--brand);
+      color: #ffffff;
+    }
+
+    /* Metric Rows */
+    .metrics-stack {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 16px;
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    .metric-row {
+    .metric-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
     }
 
-    .metric-key {
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
       color: var(--text-muted);
-      font-size: 11px;
     }
 
-    .metric-val {
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-main);
     }
 
-    /* Center Block Stream */
-    .node-status-bar {
+    /* Verification Status Banner */
+    .verify-banner {
+      background: #ffffff;
+      border: 1px solid var(--emerald-border);
+      border-left: 4px solid var(--emerald);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .verify-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--emerald);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .verify-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Stats Grid */
+    .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 16px;
       margin-bottom: 20px;
     }
 
     @media (max-width: 768px) {
-      .node-status-bar {
+      .stats-row {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    .stat-card {
+    .stat-box {
       background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 8px;
-      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
     }
 
-    .stat-card-title {
-      font-size: 10px;
-      color: var(--text-muted);
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      color: var(--text-muted);
       margin-bottom: 6px;
     }
 
-    .stat-card-val {
-      font-size: 20px;
-      font-weight: 700;
-      font-family: 'Space Grotesk', sans-serif;
+    .stat-val {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Ledger Table */
+    .ledger-table-wrap {
+      overflow-x: auto;
     }
 
     .ledger-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 13px;
     }
 
     .ledger-table th {
       text-align: left;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--surface-border);
-      color: var(--text-muted);
-      font-weight: 500;
-      font-size: 10px;
+      padding: 12px 16px;
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
     }
 
     .ledger-table td {
-      padding: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
       vertical-align: middle;
     }
 
     .ledger-table tr:hover td {
-      background: rgba(255, 255, 255, 0.015);
+      background: #f8fafc;
     }
 
-    .hash-badge {
+    .code-badge {
       font-family: 'JetBrains Mono', monospace;
-      color: var(--cyan);
-      background: rgba(6, 182, 212, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
       font-size: 11px;
-      border: 1px solid rgba(6, 182, 212, 0.2);
+      font-weight: 500;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: var(--blue);
     }
 
-    .reward-pill {
-      color: var(--amber);
-      font-weight: 600;
+    .reward-tag {
+      font-weight: 700;
+      color: var(--brand-dark);
       display: inline-flex;
       align-items: center;
       gap: 4px;
     }
 
-    /* Terminal logs */
-    .terminal-box {
-      background: #080a0c;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      padding: 12px;
+    /* Terminal Console */
+    .terminal-container {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
       height: 380px;
       overflow-y: auto;
-      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
+      gap: 8px;
     }
 
-    .terminal-box::-webkit-scrollbar {
-      width: 4px;
+    .terminal-container::-webkit-scrollbar {
+      width: 5px;
+    }
+    .terminal-container::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 4px;
     }
 
-    .terminal-box::-webkit-scrollbar-thumb {
-      background: var(--surface-border);
-      border-radius: 2px;
-    }
-
-    .log-entry {
-      line-height: 1.4;
+    .log-line {
+      line-height: 1.45;
       word-break: break-all;
     }
 
     .log-time {
-      color: var(--text-dim);
+      color: var(--text-subtle);
       margin-right: 6px;
+      font-size: 11px;
     }
 
     .log-info { color: var(--text-muted); }
-    .log-success { color: var(--green); }
-    .log-warn { color: var(--amber); }
-
-    /* Verification banner */
-    .dns-banner {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px dashed rgba(16, 185, 129, 0.3);
-      border-radius: 8px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .dns-info-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--green);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .dns-info-desc {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
+    .log-success { color: var(--emerald); font-weight: 500; }
+    .log-warn { color: var(--brand-dark); font-weight: 500; }
 
     /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
       z-index: 100;
       display: none;
       align-items: center;
@@ -453,46 +490,47 @@
     }
 
     .modal {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 12px;
-      max-width: 520px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 500px;
       width: 100%;
       padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      box-shadow: var(--shadow-lg);
     }
 
-    .modal-head {
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
       font-size: 18px;
       font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
-    .code-block {
-      background: #080a0d;
-      border: 1px solid var(--surface-border);
-      padding: 12px;
-      border-radius: 6px;
-      margin: 12px 0;
-      font-size: 11px;
+    .code-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--brand-dark);
+      margin: 8px 0 16px 0;
       user-select: all;
-      color: var(--amber);
-      word-break: break-all;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--surface-border);
-      padding: 16px 24px;
-      font-size: 11px;
-      color: var(--text-dim);
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 16px 28px;
+      font-size: 12px;
+      color: var(--text-muted);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -502,21 +540,23 @@
 </head>
 <body>
 
+  <!-- Top Navigation -->
   <header>
-    <div class="brand-group">
-      <div class="brand-icon">⚡</div>
-      <div class="brand-tag">
-        SQUEEKNET <span style="font-weight: 400; color: var(--text-muted);">WHEEL-OPS</span>
+    <div class="brand-wrap">
+      <div class="brand-badge">⚡</div>
+      <div>
+        <span class="brand-title">SqueekNet</span>
+        <span class="brand-sub">Consensus Terminal</span>
       </div>
-      <span class="release-pill">v1.0.4-genesis</span>
+      <span class="tag-pill">v1.2.0 • Genesis Protocol</span>
     </div>
 
-    <div class="header-actions">
-      <button class="btn btn-audio" id="audioToggle" title="Toggle Wheel Bearing Sound">
+    <div class="header-controls">
+      <button class="btn btn-icon" id="audioToggle" title="Toggle Wheel Sound">
         <span id="audioIcon">🔈</span>
       </button>
       <button class="btn" id="dnsVerifyBtn">
-        <span style="color: var(--green);">●</span> Genesis DNS Proof
+        <span style="color: var(--emerald);">●</span> DNS Proof
       </button>
       <button class="btn btn-primary" id="connectWalletBtn">
         Connect Wallet
@@ -524,93 +564,96 @@
     </div>
   </header>
 
+  <!-- Main Grid -->
   <main>
-    <!-- Left: Wheel Telemetry & Physical PoW Engine -->
-    <div class="panel">
-      <div class="panel-header">
-        <span>Consensus Engine // PoH</span>
-        <span id="consensusStatus" style="color: var(--green);">ONLINE</span>
+    <!-- Left: Consensus Wheel & Physical Telemetry -->
+    <div class="card">
+      <div class="card-head">
+        <span>Consensus Engine</span>
+        <span style="color: var(--emerald); display: flex; align-items: center; gap: 4px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--emerald);"></span> ACTIVE
+        </span>
       </div>
-      <div class="panel-body">
-        <div class="wheel-container">
-          <canvas id="wheelCanvas" width="520" height="520"></canvas>
-          <div class="rpm-display">
-            <div class="rpm-number" id="rpmValue">0</div>
-            <div class="rpm-label">Rotations Per Minute (RPM)</div>
+      <div class="card-body">
+        <div class="wheel-stage">
+          <canvas id="wheelCanvas" width="500" height="500"></canvas>
+          <div class="rpm-container">
+            <div class="rpm-display" id="rpmValue">68</div>
+            <div class="rpm-caption">Rotations Per Minute (RPM)</div>
           </div>
         </div>
 
-        <button class="sprint-button" id="sprintBtn">
-          <span>⚡</span> SPRINT HAMSTER (PUMP HASH)
+        <button class="throttle-btn" id="sprintBtn">
+          <span>⚡</span> SPRINT WORKER (PUMP WORK)
         </button>
 
-        <div class="metric-list">
-          <div class="metric-row">
-            <span class="metric-key">Cheek Cache Buffer</span>
-            <span class="metric-val" id="cheekCap">14.2 / 32 MB</span>
+        <div class="metrics-stack">
+          <div class="metric-item">
+            <span class="metric-label">Cheek Memory Cache</span>
+            <span class="metric-value" id="cheekCap">18.4 / 32 MB</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-key">Current Caloric Burn</span>
-            <span class="metric-val" id="calorieBurn">0.84 kcal/hr</span>
+          <div class="metric-item">
+            <span class="metric-label">Caloric Burn Rate</span>
+            <span class="metric-value" id="calorieBurn">1.12 kcal/hr</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-key">Wheel Bearing Temp</span>
-            <span class="metric-val" id="bearingTemp">31.4 °C</span>
+          <div class="metric-item">
+            <span class="metric-label">Axle Temperature</span>
+            <span class="metric-value" id="bearingTemp">32.6 °C</span>
           </div>
-          <div class="metric-row">
-            <span class="metric-key">Hash Target Difficulty</span>
-            <span class="metric-val" style="color: var(--amber);">0x0000FFFF</span>
+          <div class="metric-item">
+            <span class="metric-label">Target Difficulty</span>
+            <span class="metric-value" style="color: var(--brand-dark);">0x0000FFFF</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Center: Main Ledger & Chain State -->
+    <!-- Center: Main Ledger & State -->
     <div>
-      <div class="dns-banner">
+      <div class="verify-banner">
         <div>
-          <div class="dns-info-title">
-            <span>🛡️</span> Squeekchain Genesis Verification Ready
+          <div class="verify-title">
+            <span>🛡️</span> Squeekchain Genesis Domain Proof Active
           </div>
-          <div class="dns-info-desc">
-            This node carries active domain cryptographic verification for Squeekchain team audit.
+          <div class="verify-desc">
+            Serving live consensus interface for <code style="font-weight: 700; color: var(--text-main);">squeekops.abrdns.com</code>.
           </div>
         </div>
-        <button class="btn" onclick="openDnsModal()" style="font-size: 11px;">Inspect Record</button>
+        <button class="btn" onclick="openDnsModal()" style="font-size: 12px;">DNS Details</button>
       </div>
 
-      <div class="node-status-bar">
-        <div class="stat-card">
-          <div class="stat-card-title">Block Height</div>
-          <div class="stat-card-val" id="blockHeight">84,102</div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-label">Block Height</div>
+          <div class="stat-val" id="blockHeight">84,102</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-title">Total Seeds Mined</div>
-          <div class="stat-card-val" style="color: var(--amber);" id="totalSeeds">1,429.5 🌻</div>
+        <div class="stat-box">
+          <div class="stat-label">Total Seeds Mined</div>
+          <div class="stat-val" style="color: var(--brand-dark);" id="totalSeeds">1,429.5 🌻</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-title">Active Wheel Nodes</div>
-          <div class="stat-card-val">418</div>
+        <div class="stat-box">
+          <div class="stat-label">Verified Nodes</div>
+          <div class="stat-val">524</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-title">Consensus Epoch</div>
-          <div class="stat-card-val" id="epochVal">#42</div>
+        <div class="stat-box">
+          <div class="stat-label">Epoch</div>
+          <div class="stat-val" id="epochVal">#42</div>
         </div>
       </div>
 
-      <div class="panel">
-        <div class="panel-header">
+      <div class="card">
+        <div class="card-head">
           <span>Mined Wheel Blocks (Proof-of-Hamster)</span>
-          <span style="color: var(--cyan);">LIVE PROPAGATION</span>
+          <span style="color: var(--blue);">LIVE PROPAGATION</span>
         </div>
-        <div style="overflow-x: auto;">
+        <div class="ledger-table-wrap">
           <table class="ledger-table">
             <thead>
               <tr>
                 <th>Height</th>
                 <th>Block Hash</th>
-                <th>Wheel Nonce</th>
-                <th>Work (RPM)</th>
+                <th>Nonce</th>
+                <th>Speed</th>
                 <th>Reward</th>
                 <th>Age</th>
               </tr>
@@ -624,13 +667,13 @@
     </div>
 
     <!-- Right: Telemetry & Gossip Stream -->
-    <div class="panel">
-      <div class="panel-header">
+    <div class="card">
+      <div class="card-head">
         <span>Gossip Telemetry</span>
-        <span style="color: var(--text-muted);" id="peerCount">18 Peers</span>
+        <span style="color: var(--text-muted);" id="peerCount">22 Peers</span>
       </div>
-      <div class="panel-body">
-        <div class="terminal-box" id="terminalLog"></div>
+      <div class="card-body" style="display: flex; flex-direction: column;">
+        <div class="terminal-container" id="terminalLog"></div>
 
         <div style="margin-top: 16px;">
           <button class="btn" style="width: 100%; justify-content: center;" id="simulateTxBtn">
@@ -641,41 +684,42 @@
     </div>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <div>Squeekchain Physical Consensus Interface // Decentralized Hamster Infrastructure</div>
-    <div id="verifiedDomainLabel">Domain: <span style="color: var(--green);">Pending DNS Match</span></div>
+    <div>SqueekNet Physical Consensus Interface • Squeekchain Protocol</div>
+    <div id="verifiedDomainLabel">Domain: <span style="font-weight: 600; color: var(--emerald);">squeekops.abrdns.com</span></div>
   </footer>
 
   <!-- DNS Modal -->
   <div class="modal-overlay" id="dnsModal">
     <div class="modal">
-      <div class="modal-head">
-        <div class="modal-title">Genesis DNS Proof Config</div>
-        <button class="btn" onclick="closeDnsModal()">✕</button>
+      <div class="modal-header">
+        <div class="modal-title">Squeekchain DNS Verification</div>
+        <button class="btn btn-icon" onclick="closeDnsModal()">✕</button>
       </div>
-      <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
-        To link this project domain to your verified Squeekchain account, add the following TXT record to your DNS host (Cloudflare, Namecheap, Vercel DNS, etc.):
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
+        To connect this domain to your Squeekchain Genesis submission, ensure the following records exist in ClouDNS:
       </p>
 
-      <div style="font-size: 11px; color: var(--text-dim);">DNS HOST / NAME:</div>
-      <div class="code-block">@ (or squeek.yourdomain.com)</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">HOST (ROOT):</div>
+      <div class="code-box">@ (squeekops.abrdns.com)</div>
 
-      <div style="font-size: 11px; color: var(--text-dim);">DNS TYPE:</div>
-      <div class="code-block">TXT</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">WEBSITE A RECORD (POINTS TO GITHUB):</div>
+      <div class="code-box">185.199.108.153</div>
 
-      <div style="font-size: 11px; color: var(--text-dim);">VERIFICATION VALUE (Provided in Squeekchain Genesis dashboard):</div>
-      <div class="code-block" id="dnsTxtToken">squeekchain-verify=u4fyts6q_genesis_wheelops_proof</div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">SQUEEKCHAIN TXT RECORD:</div>
+      <div class="code-box" id="dnsTxtToken">squeekchain-verify=u4fyts6q_genesis_wheelops_proof</div>
 
-      <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="copyDns()">
-        Copy TXT Record Value
+      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="copyDns()">
+        Copy TXT Token
       </button>
     </div>
   </div>
 
   <script>
     // --- State & Variables ---
-    let currentRpm = 64;
-    let targetRpm = 64;
+    let currentRpm = 68;
+    let targetRpm = 68;
     let wheelAngle = 0;
     let blockHeight = 84102;
     let totalSeeds = 1429.5;
@@ -683,7 +727,7 @@
     let audioCtx = null;
     let walletAddress = null;
 
-    // --- Audio Synthesis (No external assets) ---
+    // --- Audio Synthesis ---
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -696,57 +740,66 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
         osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.25);
+        osc.stop(audioCtx.currentTime + 0.22);
       } catch (e) {}
     }
 
-    // --- Canvas Wheel Rendering ---
+    // --- Canvas Wheel (High-End Brushed Steel/Titanium Finish) ---
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const outerRadius = 210;
-    const innerRadius = 180;
+    const outerRadius = 200;
+    const innerRadius = 175;
     const numSpokes = 16;
 
     function drawWheel() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Smooth inertia
+      // Inertia dynamics
       currentRpm += (targetRpm - currentRpm) * 0.05;
-      if (targetRpm > 60) targetRpm -= 0.35; // gradual friction decay
+      if (targetRpm > 60) targetRpm -= 0.35;
       wheelAngle += (currentRpm * 0.0035);
 
-      // Outer Stand
-      ctx.strokeStyle = '#222936';
-      ctx.lineWidth = 14;
+      // Support Arch (Brushed Titanium)
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 12;
       ctx.beginPath();
       ctx.arc(centerX, centerY, outerRadius + 18, 0.2 * Math.PI, 0.8 * Math.PI);
       ctx.stroke();
 
-      // Base mount
-      ctx.fillStyle = '#1e232d';
-      ctx.fillRect(centerX - 80, centerY + outerRadius + 10, 160, 14);
+      // Precision Base mount
+      ctx.fillStyle = '#cbd5e1';
+      ctx.beginPath();
+      ctx.roundRect(centerX - 75, centerY + outerRadius + 12, 150, 10, 4);
+      ctx.fill();
 
-      // Wheel Rim
-      ctx.strokeStyle = '#323c4d';
-      ctx.lineWidth = 8;
+      // Outer Rim
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
       ctx.stroke();
 
-      // Inner Rim Track (Grip mesh)
-      ctx.strokeStyle = '#1e232d';
+      // Running Track
+      ctx.strokeStyle = '#f1f5f9';
       ctx.lineWidth = 18;
       ctx.beginPath();
       ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, innerRadius + 9, 0, 2 * Math.PI);
+      ctx.arc(centerX, centerY, innerRadius - 9, 0, 2 * Math.PI);
       ctx.stroke();
 
       // Rotating Spokes
@@ -756,74 +809,76 @@
 
       for (let i = 0; i < numSpokes; i++) {
         const spokeAngle = (i * 2 * Math.PI) / numSpokes;
-        ctx.strokeStyle = (i % 2 === 0) ? '#f59e0b' : '#3d4659';
-        ctx.lineWidth = (i % 2 === 0) ? 3 : 2;
+        ctx.strokeStyle = (i % 4 === 0) ? '#d97706' : '#cbd5e1';
+        ctx.lineWidth = (i % 4 === 0) ? 2.5 : 1.5;
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(Math.cos(spokeAngle) * outerRadius, Math.sin(spokeAngle) * outerRadius);
         ctx.stroke();
       }
 
-      // Center Axle Hub
-      ctx.fillStyle = '#12151b';
+      // Hub & Sealed Bearing
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(0, 0, 36, 0, 2 * Math.PI);
+      ctx.arc(0, 0, 32, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 4;
+
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 3;
       ctx.stroke();
 
-      ctx.fillStyle = '#f59e0b';
+      ctx.fillStyle = '#b45309';
       ctx.beginPath();
-      ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+      ctx.arc(0, 0, 9, 0, 2 * Math.PI);
       ctx.fill();
 
       ctx.restore();
 
-      // Hamster Silhouette at bottom
-      const bob = Math.sin(Date.now() * 0.015 * (currentRpm / 60)) * 4;
+      // Hamster Silhouette
+      const bob = Math.sin(Date.now() * 0.015 * (currentRpm / 60)) * 3;
       ctx.save();
       ctx.translate(centerX, centerY + innerRadius - 16 + bob);
 
-      // Simple stylized hamster body
-      ctx.fillStyle = '#e2a96f';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 32, 22, -0.05, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Head & Ears
-      ctx.beginPath();
-      ctx.ellipse(22, -6, 16, 14, 0.1, 0, Math.PI * 2);
-      ctx.fill();
-
+      // Body
       ctx.fillStyle = '#d97706';
       ctx.beginPath();
-      ctx.arc(20, -18, 6, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, 30, 20, -0.05, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Head
+      ctx.beginPath();
+      ctx.ellipse(20, -6, 15, 13, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ear
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath();
+      ctx.arc(18, -17, 5, 0, Math.PI * 2);
       ctx.fill();
 
       // Eye
-      ctx.fillStyle = '#111';
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(28, -8, 3, 0, Math.PI * 2);
+      ctx.arc(26, -8, 2.5, 0, Math.PI * 2);
       ctx.fill();
 
-      // Cheek pouch (puffed)
-      ctx.fillStyle = '#f6c390';
+      // Puffed Cheek
+      ctx.fillStyle = '#fde68a';
       ctx.beginPath();
-      ctx.arc(24, 2, 9, 0, Math.PI * 2);
+      ctx.arc(22, 2, 8, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.restore();
 
-      // UI updates
+      // Telemetry output
       document.getElementById('rpmValue').textContent = Math.round(currentRpm);
-      document.getElementById('bearingTemp').textContent = (28 + (currentRpm * 0.05)).toFixed(1) + ' °C';
-      document.getElementById('calorieBurn').textContent = (0.3 + (currentRpm * 0.012)).toFixed(2) + ' kcal/hr';
+      document.getElementById('bearingTemp').textContent = (29 + (currentRpm * 0.045)).toFixed(1) + ' °C';
+      document.getElementById('calorieBurn').textContent = (0.4 + (currentRpm * 0.011)).toFixed(2) + ' kcal/hr';
 
       requestAnimationFrame(drawWheel);
     }
 
-    // --- Crypto SHA-256 Hashing for Blocks ---
+    // --- Crypto SHA-256 Hashing ---
     async function computeSha256(str) {
       const buf = new TextEncoder().encode(str);
       const hash = await crypto.subtle.digest('SHA-256', buf);
@@ -846,12 +901,12 @@
       const tbody = document.getElementById('blockTableBody');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="font-weight: 700; color: #fff;">#${blockHeight}</td>
-        <td><span class="hash-badge">${shortHash}</span></td>
-        <td style="color: var(--text-muted);">${nonce}</td>
-        <td style="color: var(--green);">${Math.round(currentRpm)} RPM</td>
-        <td><span class="reward-pill">+${reward} SQUEEK</span></td>
-        <td style="color: var(--text-dim);">just now</td>
+        <td style="font-weight: 700; color: var(--text-main);">#${blockHeight}</td>
+        <td><span class="code-badge">${shortHash}</span></td>
+        <td style="color: var(--text-muted); font-family: monospace;">${nonce}</td>
+        <td style="color: var(--emerald); font-weight: 600;">${Math.round(currentRpm)} RPM</td>
+        <td><span class="reward-tag">+${reward} SQUEEK</span></td>
+        <td style="color: var(--text-subtle);">just now</td>
       `;
 
       tbody.insertBefore(tr, tbody.firstChild);
@@ -868,16 +923,16 @@
       const box = document.getElementById('terminalLog');
       const time = new Date().toTimeString().split(' ')[0];
       const div = document.createElement('div');
-      div.className = `log-entry log-${type}`;
+      div.className = `log-line log-${type}`;
       div.innerHTML = `<span class="log-time">${time}</span> ${text}`;
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
     }
 
-    // --- Event Listeners ---
+    // --- Listeners ---
     document.getElementById('sprintBtn').addEventListener('click', () => {
-      targetRpm = Math.min(targetRpm + 65, 340);
-      logTerminal(`Manual sprint injected! Wheel torque increased to ${Math.round(targetRpm)} RPM`, 'warn');
+      targetRpm = Math.min(targetRpm + 60, 320);
+      logTerminal(`Manual sprint throttled! Wheel torque: ${Math.round(targetRpm)} RPM`, 'warn');
     });
 
     document.getElementById('simulateTxBtn').addEventListener('click', () => {
@@ -891,7 +946,7 @@
       document.getElementById('audioIcon').textContent = audioEnabled ? '🔊' : '🔈';
     });
 
-    // Wallet Integration (EIP-1193)
+    // Wallet Integration
     document.getElementById('connectWalletBtn').addEventListener('click', async () => {
       if (window.ethereum) {
         try {
@@ -902,17 +957,16 @@
           document.getElementById('connectWalletBtn').classList.remove('btn-primary');
           logTerminal(`Wallet verified: ${walletAddress}`, 'success');
         } catch (e) {
-          logTerminal(`Wallet connect rejected: ${e.message}`, 'warn');
+          logTerminal(`Wallet rejected: ${e.message}`, 'warn');
         }
       } else {
         walletAddress = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
         const short = walletAddress.substring(0, 6) + '...' + walletAddress.substring(walletAddress.length - 4);
         document.getElementById('connectWalletBtn').textContent = short + ' (Demo)';
-        logTerminal(`Web3 provider not detected. Connected demo address: ${walletAddress}`, 'warn');
+        logTerminal(`Web3 provider detected in mock mode: ${walletAddress}`, 'warn');
       }
     });
 
-    // Modal helpers
     function openDnsModal() {
       document.getElementById('dnsModal').classList.add('active');
     }
@@ -924,38 +978,29 @@
     function copyDns() {
       const val = document.getElementById('dnsTxtToken').textContent;
       navigator.clipboard.writeText(val);
-      logTerminal(`Copied TXT token to clipboard: ${val}`, 'success');
-      alert("Copied Squeekchain TXT Record! Add to your domain DNS settings.");
+      logTerminal(`Copied TXT token: ${val}`, 'success');
+      alert("Copied Squeekchain TXT Record!");
     }
 
     // --- Init ---
     window.addEventListener('load', () => {
-      // Auto detect domain name
-      const host = window.location.hostname || "custom-domain.com";
-      document.getElementById('verifiedDomainLabel').innerHTML = `Domain: <span style="color: var(--green);">${host}</span>`;
+      logTerminal("Initializing Squeekchain WheelOps v1.2.0...", "info");
+      logTerminal("Consensus Engine: Physical Proof-of-Hamster (PoH) active.", "info");
+      logTerminal("Connected to 22 peer nodes on SqueekNet gossip mesh.", "success");
+      logTerminal("Domain squeekops.abrdns.com synced.", "info");
 
-      // Seed initial terminal logs
-      logTerminal("Initializing Squeekchain WheelOps Core v1.0.4...", "info");
-      logTerminal("Consensus Engine: Physical Proof-of-Hamster (PoH) activated.", "info");
-      logTerminal("Connected to 18 peer nodes across SqueekNet gossip mesh.", "success");
-      logTerminal("Cheek buffer synchronized. Ready to mint blocks.", "info");
-
-      // Populate initial blocks
       for (let i = 0; i < 4; i++) {
         mineBlock();
       }
 
-      // Continuous loop for blocks
       setInterval(() => {
-        if (Math.random() > 0.4) {
+        if (Math.random() > 0.45) {
           mineBlock();
         }
       }, 4200);
 
-      // Start canvas loop
       requestAnimationFrame(drawWheel);
     });
   </script>
 </body>
 </html>
-
