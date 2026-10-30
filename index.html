@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WheelOps // Squeekchain Consensus Terminal</title>
+  <meta name="description" content="Physical Proof-of-Work telemetry monitor and interactive consensus validator for Squeekchain.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --surface: #12151b;
+      --surface-border: #1e232d;
+      --surface-hover: #191e27;
+      --text-main: #f0f2f5;
+      --text-muted: #7e8799;
+      --text-dim: #434b59;
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.18);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.15);
+      --red: #ef4444;
+      --cyan: #06b6d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.05), transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+    }
+
+    /* Top Navigation */
+    header {
+      border-bottom: 1px solid var(--surface-border);
+      background: rgba(11, 13, 16, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--amber);
+      color: #000;
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .release-pill {
+      font-size: 10px;
+      padding: 2px 8px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      border: 1px solid var(--surface-border);
+      background: var(--surface);
+      color: var(--text-main);
+    }
+
+    .btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-muted);
+    }
+
+    .btn-primary {
+      background: var(--amber);
+      color: #0b0d10;
+      border-color: var(--amber);
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: #e69106;
+      border-color: #e69106;
+      color: #000;
+      box-shadow: 0 0 16px var(--amber-glow);
+    }
+
+    .btn-audio {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    /* Layout */
+    main {
+      flex: 1;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 360px 1fr 340px;
+      gap: 20px;
+    }
+
+    @media (max-width: 1180px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--surface-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .panel-body {
+      padding: 16px;
+      flex: 1;
+    }
+
+    /* Wheel Stage */
+    .wheel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+    }
+
+    #wheelCanvas {
+      width: 260px;
+      height: 260px;
+      filter: drop-shadow(0 0 24px var(--amber-glow));
+    }
+
+    .rpm-display {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .rpm-number {
+      font-size: 38px;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--amber);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .rpm-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .sprint-button {
+      grid-column: span 2;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      padding: 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.1s ease;
+      user-select: none;
+    }
+
+    .sprint-button:active {
+      background: var(--amber);
+      color: #0b0d10;
+      transform: scale(0.98);
+    }
+
+    /* Telemetry gauges */
+    .metric-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .metric-key {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .metric-val {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Center Block Stream */
+    .node-status-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .node-status-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .stat-card-title {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .stat-card-val {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .ledger-table th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--surface-border);
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .ledger-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      vertical-align: middle;
+    }
+
+    .ledger-table tr:hover td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .hash-badge {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--cyan);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .reward-pill {
+      color: var(--amber);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Terminal logs */
+    .terminal-box {
+      background: #080a0c;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 12px;
+      height: 380px;
+      overflow-y: auto;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-box::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .terminal-box::-webkit-scrollbar-thumb {
+      background: var(--surface-border);
+      border-radius: 2px;
+    }
+
+    .log-entry {
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .log-time {
+      color: var(--text-dim);
+      margin-right: 6px;
+    }
+
+    .log-info { color: var(--text-muted); }
+    .log-success { color: var(--green); }
+    .log-warn { color: var(--amber); }
+
+    /* Verification banner */
+    .dns-banner {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px dashed rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dns-info-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dns-info-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      max-width: 520px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .code-block {
+      background: #080a0d;
+      border: 1px solid var(--surface-border);
+      padding: 12px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-size: 11px;
+      user-select: all;
+      color: var(--amber);
+      word-break: break-all;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--surface-border);
+      padding: 16px 24px;
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-group">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-tag">
+        SQUEEKNET <span style="font-weight: 400; color: var(--text-muted);">WHEEL-OPS</span>
+      </div>
+      <span class="release-pill">v1.0.4-genesis</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-audio" id="audioToggle" title="Toggle Wheel Bearing Sound">
+        <span id="audioIcon">🔈</span>
+      </button>
+      <button class="btn" id="dnsVerifyBtn">
+        <span style="color: var(--green);">●</span> Genesis DNS Proof
+      </button>
+      <button class="btn btn-primary" id="connectWalletBtn">
+        Connect Wallet
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left: Wheel Telemetry & Physical PoW Engine -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>Consensus Engine // PoH</span>
+        <span id="consensusStatus" style="color: var(--green);">ONLINE</span>
+      </div>
+      <div class="panel-body">
+        <div class="wheel-container">
+          <canvas id="wheelCanvas" width="520" height="520"></canvas>
+          <div class="rpm-display">
+            <div class="rpm-number" id="rpmValue">0</div>
+            <div class="rpm-label">Rotations Per Minute (RPM)</div>
+          </div>
+        </div>
+
+        <button class="sprint-button" id="sprintBtn">
+          <span>⚡</span> SPRINT HAMSTER (PUMP HASH)
+        </button>
+
+        <div class="metric-list">
+          <div class="metric-row">
+            <span class="metric-key">Cheek Cache Buffer</span>
+            <span class="metric-val" id="cheekCap">14.2 / 32 MB</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">Current Caloric Burn</span>
+            <span class="metric-val" id="calorieBurn">0.84 kcal/hr</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">Wheel Bearing Temp</span>
+            <span class="metric-val" id="bearingTemp">31.4 °C</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">Hash Target Difficulty</span>
+            <span class="metric-val" style="color: var(--amber);">0x0000FFFF</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Main Ledger & Chain State -->
+    <div>
+      <div class="dns-banner">
+        <div>
+          <div class="dns-info-title">
+            <span>🛡️</span> Squeekchain Genesis Verification Ready
+          </div>
+          <div class="dns-info-desc">
+            This node carries active domain cryptographic verification for Squeekchain team audit.
+          </div>
+        </div>
+        <button class="btn" onclick="openDnsModal()" style="font-size: 11px;">Inspect Record</button>
+      </div>
+
+      <div class="node-status-bar">
+        <div class="stat-card">
+          <div class="stat-card-title">Block Height</div>
+          <div class="stat-card-val" id="blockHeight">84,102</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">Total Seeds Mined</div>
+          <div class="stat-card-val" style="color: var(--amber);" id="totalSeeds">1,429.5 🌻</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">Active Wheel Nodes</div>
+          <div class="stat-card-val">418</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-title">Consensus Epoch</div>
+          <div class="stat-card-val" id="epochVal">#42</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span>Mined Wheel Blocks (Proof-of-Hamster)</span>
+          <span style="color: var(--cyan);">LIVE PROPAGATION</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Height</th>
+                <th>Block Hash</th>
+                <th>Wheel Nonce</th>
+                <th>Work (RPM)</th>
+                <th>Reward</th>
+                <th>Age</th>
+              </tr>
+            </thead>
+            <tbody id="blockTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Telemetry & Gossip Stream -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>Gossip Telemetry</span>
+        <span style="color: var(--text-muted);" id="peerCount">18 Peers</span>
+      </div>
+      <div class="panel-body">
+        <div class="terminal-box" id="terminalLog"></div>
+
+        <div style="margin-top: 16px;">
+          <button class="btn" style="width: 100%; justify-content: center;" id="simulateTxBtn">
+            + Inject Cheek Transaction
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div>Squeekchain Physical Consensus Interface // Decentralized Hamster Infrastructure</div>
+    <div id="verifiedDomainLabel">Domain: <span style="color: var(--green);">Pending DNS Match</span></div>
+  </footer>
+
+  <!-- DNS Modal -->
+  <div class="modal-overlay" id="dnsModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title">Genesis DNS Proof Config</div>
+        <button class="btn" onclick="closeDnsModal()">✕</button>
+      </div>
+      <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
+        To link this project domain to your verified Squeekchain account, add the following TXT record to your DNS host (Cloudflare, Namecheap, Vercel DNS, etc.):
+      </p>
+
+      <div style="font-size: 11px; color: var(--text-dim);">DNS HOST / NAME:</div>
+      <div class="code-block">@ (or squeek.yourdomain.com)</div>
+
+      <div style="font-size: 11px; color: var(--text-dim);">DNS TYPE:</div>
+      <div class="code-block">TXT</div>
+
+      <div style="font-size: 11px; color: var(--text-dim);">VERIFICATION VALUE (Provided in Squeekchain Genesis dashboard):</div>
+      <div class="code-block" id="dnsTxtToken">squeekchain-verify=u4fyts6q_genesis_wheelops_proof</div>
+
+      <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="copyDns()">
+        Copy TXT Record Value
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // --- State & Variables ---
+    let currentRpm = 64;
+    let targetRpm = 64;
+    let wheelAngle = 0;
+    let blockHeight = 84102;
+    let totalSeeds = 1429.5;
+    let audioEnabled = false;
+    let audioCtx = null;
+    let walletAddress = null;
+
+    // --- Audio Synthesis (No external assets) ---
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playBlockSound() {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+      } catch (e) {}
+    }
+
+    // --- Canvas Wheel Rendering ---
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const outerRadius = 210;
+    const innerRadius = 180;
+    const numSpokes = 16;
+
+    function drawWheel() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Smooth inertia
+      currentRpm += (targetRpm - currentRpm) * 0.05;
+      if (targetRpm > 60) targetRpm -= 0.35; // gradual friction decay
+      wheelAngle += (currentRpm * 0.0035);
+
+      // Outer Stand
+      ctx.strokeStyle = '#222936';
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerRadius + 18, 0.2 * Math.PI, 0.8 * Math.PI);
+      ctx.stroke();
+
+      // Base mount
+      ctx.fillStyle = '#1e232d';
+      ctx.fillRect(centerX - 80, centerY + outerRadius + 10, 160, 14);
+
+      // Wheel Rim
+      ctx.strokeStyle = '#323c4d';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      // Inner Rim Track (Grip mesh)
+      ctx.strokeStyle = '#1e232d';
+      ctx.lineWidth = 18;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      // Rotating Spokes
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(wheelAngle);
+
+      for (let i = 0; i < numSpokes; i++) {
+        const spokeAngle = (i * 2 * Math.PI) / numSpokes;
+        ctx.strokeStyle = (i % 2 === 0) ? '#f59e0b' : '#3d4659';
+        ctx.lineWidth = (i % 2 === 0) ? 3 : 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(spokeAngle) * outerRadius, Math.sin(spokeAngle) * outerRadius);
+        ctx.stroke();
+      }
+
+      // Center Axle Hub
+      ctx.fillStyle = '#12151b';
+      ctx.beginPath();
+      ctx.arc(0, 0, 36, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.restore();
+
+      // Hamster Silhouette at bottom
+      const bob = Math.sin(Date.now() * 0.015 * (currentRpm / 60)) * 4;
+      ctx.save();
+      ctx.translate(centerX, centerY + innerRadius - 16 + bob);
+
+      // Simple stylized hamster body
+      ctx.fillStyle = '#e2a96f';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 32, 22, -0.05, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Head & Ears
+      ctx.beginPath();
+      ctx.ellipse(22, -6, 16, 14, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#d97706';
+      ctx.beginPath();
+      ctx.arc(20, -18, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye
+      ctx.fillStyle = '#111';
+      ctx.beginPath();
+      ctx.arc(28, -8, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cheek pouch (puffed)
+      ctx.fillStyle = '#f6c390';
+      ctx.beginPath();
+      ctx.arc(24, 2, 9, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+
+      // UI updates
+      document.getElementById('rpmValue').textContent = Math.round(currentRpm);
+      document.getElementById('bearingTemp').textContent = (28 + (currentRpm * 0.05)).toFixed(1) + ' °C';
+      document.getElementById('calorieBurn').textContent = (0.3 + (currentRpm * 0.012)).toFixed(2) + ' kcal/hr';
+
+      requestAnimationFrame(drawWheel);
+    }
+
+    // --- Crypto SHA-256 Hashing for Blocks ---
+    async function computeSha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // --- Block Engine ---
+    async function mineBlock() {
+      blockHeight++;
+      const nonce = Math.floor(Math.random() * 900000) + 100000;
+      const rawData = `squeekchain-genesis-${blockHeight}-${nonce}-${Math.round(currentRpm)}`;
+      const hash = await computeSha256(rawData);
+      const shortHash = '0x' + hash.substring(0, 6) + '...' + hash.substring(hash.length - 4);
+      const reward = (Math.random() * 2 + 1.2).toFixed(2);
+      totalSeeds += parseFloat(reward);
+
+      document.getElementById('blockHeight').textContent = blockHeight.toLocaleString();
+      document.getElementById('totalSeeds').textContent = totalSeeds.toFixed(1) + ' 🌻';
+
+      const tbody = document.getElementById('blockTableBody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight: 700; color: #fff;">#${blockHeight}</td>
+        <td><span class="hash-badge">${shortHash}</span></td>
+        <td style="color: var(--text-muted);">${nonce}</td>
+        <td style="color: var(--green);">${Math.round(currentRpm)} RPM</td>
+        <td><span class="reward-pill">+${reward} SQUEEK</span></td>
+        <td style="color: var(--text-dim);">just now</td>
+      `;
+
+      tbody.insertBefore(tr, tbody.firstChild);
+      if (tbody.children.length > 7) {
+        tbody.removeChild(tbody.lastChild);
+      }
+
+      logTerminal(`Block #${blockHeight} validated [${shortHash}] via PoH. RPM: ${Math.round(currentRpm)}`, 'success');
+      playBlockSound();
+    }
+
+    // --- Terminal Logger ---
+    function logTerminal(text, type = 'info') {
+      const box = document.getElementById('terminalLog');
+      const time = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.className = `log-entry log-${type}`;
+      div.innerHTML = `<span class="log-time">${time}</span> ${text}`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // --- Event Listeners ---
+    document.getElementById('sprintBtn').addEventListener('click', () => {
+      targetRpm = Math.min(targetRpm + 65, 340);
+      logTerminal(`Manual sprint injected! Wheel torque increased to ${Math.round(targetRpm)} RPM`, 'warn');
+    });
+
+    document.getElementById('simulateTxBtn').addEventListener('click', () => {
+      const txid = Math.random().toString(16).substring(2, 10);
+      logTerminal(`Mempool Tx accepted: 0x${txid} (Transfer 12.0 SQUEEK seeds)`, 'info');
+    });
+
+    document.getElementById('audioToggle').addEventListener('click', () => {
+      initAudio();
+      audioEnabled = !audioEnabled;
+      document.getElementById('audioIcon').textContent = audioEnabled ? '🔊' : '🔈';
+    });
+
+    // Wallet Integration (EIP-1193)
+    document.getElementById('connectWalletBtn').addEventListener('click', async () => {
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          walletAddress = accounts[0];
+          const short = walletAddress.substring(0, 6) + '...' + walletAddress.substring(walletAddress.length - 4);
+          document.getElementById('connectWalletBtn').textContent = short;
+          document.getElementById('connectWalletBtn').classList.remove('btn-primary');
+          logTerminal(`Wallet verified: ${walletAddress}`, 'success');
+        } catch (e) {
+          logTerminal(`Wallet connect rejected: ${e.message}`, 'warn');
+        }
+      } else {
+        walletAddress = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
+        const short = walletAddress.substring(0, 6) + '...' + walletAddress.substring(walletAddress.length - 4);
+        document.getElementById('connectWalletBtn').textContent = short + ' (Demo)';
+        logTerminal(`Web3 provider not detected. Connected demo address: ${walletAddress}`, 'warn');
+      }
+    });
+
+    // Modal helpers
+    function openDnsModal() {
+      document.getElementById('dnsModal').classList.add('active');
+    }
+    function closeDnsModal() {
+      document.getElementById('dnsModal').classList.remove('active');
+    }
+    document.getElementById('dnsVerifyBtn').addEventListener('click', openDnsModal);
+
+    function copyDns() {
+      const val = document.getElementById('dnsTxtToken').textContent;
+      navigator.clipboard.writeText(val);
+      logTerminal(`Copied TXT token to clipboard: ${val}`, 'success');
+      alert("Copied Squeekchain TXT Record! Add to your domain DNS settings.");
+    }
+
+    // --- Init ---
+    window.addEventListener('load', () => {
+      // Auto detect domain name
+      const host = window.location.hostname || "custom-domain.com";
+      document.getElementById('verifiedDomainLabel').innerHTML = `Domain: <span style="color: var(--green);">${host}</span>`;
+
+      // Seed initial terminal logs
+      logTerminal("Initializing Squeekchain WheelOps Core v1.0.4...", "info");
+      logTerminal("Consensus Engine: Physical Proof-of-Hamster (PoH) activated.", "info");
+      logTerminal("Connected to 18 peer nodes across SqueekNet gossip mesh.", "success");
+      logTerminal("Cheek buffer synchronized. Ready to mint blocks.", "info");
+
+      // Populate initial blocks
+      for (let i = 0; i < 4; i++) {
+        mineBlock();
+      }
+
+      // Continuous loop for blocks
+      setInterval(() => {
+        if (Math.random() > 0.4) {
+          mineBlock();
+        }
+      }, 4200);
+
+      // Start canvas loop
+      requestAnimationFrame(drawWheel);
+    });
+  </script>
+</body>
+</html>
+
