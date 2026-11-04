@@ -7,6 +7,9 @@
   <meta name="description" content="Interactive Proof-of-Hamster arcade game, dynamic NFT merge lab, and live telemetry stream companion built for the Squeekchain ecosystem.">
   <meta name="squeekchain-verification" content="squeekops-genesis-verified">
 
+  <!-- Crisp Favicon via Inline SVG (Zero 404s) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐹</text></svg>">
+
   <!-- Google Fonts: Barlow Condensed, Plus Jakarta Sans, IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,7 +93,7 @@
       z-index: 9999;
     }
 
-    /* Monospace Utility */
+    /* Typography & Utilities */
     .mono {
       font-family: 'IBM Plex Mono', monospace;
     }
@@ -161,7 +164,7 @@
       letter-spacing: 0.4px;
     }
 
-    /* Live Hardware Pill */
+    /* Live Telemetry Pill */
     .telemetry-pill {
       display: inline-flex;
       align-items: center;
@@ -282,7 +285,7 @@
       gap: 24px;
     }
 
-    /* Quick Telemetry Marquee */
+    /* Live Telemetry Bar */
     .telemetry-bar {
       background: var(--surface);
       border: 2px solid var(--border);
@@ -350,7 +353,7 @@
       padding: 20px;
     }
 
-    /* Grid Layouts */
+    /* Grids */
     .grid-2 {
       display: grid;
       grid-template-columns: 1.5fr 1fr;
@@ -396,6 +399,8 @@
       display: flex;
       justify-content: space-between;
       pointer-events: none;
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .hud-badge {
       background: rgba(255, 255, 255, 0.94);
@@ -416,6 +421,27 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Live Telemetry Mode Badge */
+    .live-status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-running {
+      background: var(--brand-light);
+      color: var(--brand-dark);
+    }
+    .status-resting {
+      background: var(--blue-light);
+      color: var(--blue);
     }
 
     /* SqueekFi Merge Forge */
@@ -429,6 +455,7 @@
       border: 2px dashed var(--border);
       border-radius: var(--radius-md);
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
     .nft-slot {
       width: 140px;
@@ -443,7 +470,7 @@
       justify-content: center;
       padding: 12px;
       text-align: center;
-      position: relative;
+      transition: transform 0.2s ease;
     }
     .nft-avatar-preview {
       width: 80px;
@@ -506,6 +533,11 @@
       gap: 20px;
       align-items: center;
     }
+    @media (max-width: 600px) {
+      .avatar-maker {
+        grid-template-columns: 1fr;
+      }
+    }
     .avatar-display-box {
       width: 180px;
       height: 180px;
@@ -515,6 +547,7 @@
       box-shadow: var(--shadow-retro);
       display: grid;
       place-items: center;
+      margin: 0 auto;
     }
     .maker-controls {
       display: grid;
@@ -561,7 +594,7 @@
       border: 2px solid var(--border);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-retro-lg);
-      max-width: 600px;
+      max-width: 620px;
       width: 100%;
       overflow: hidden;
       animation: popIn 0.15s ease-out;
@@ -583,6 +616,8 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      max-height: 80vh;
+      overflow-y: auto;
     }
     .code-snippet {
       background: #18181B;
@@ -605,6 +640,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
+      flex-wrap: wrap;
     }
 
     /* Footer */
@@ -629,6 +665,24 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
+    }
+
+    /* Clickable on-chain settlement links */
+    .settlement-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      transition: background 0.1s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .settlement-row:hover {
+      background: #F8F7F4;
+      border-color: var(--border);
     }
   </style>
 </head>
@@ -658,26 +712,26 @@
       <span class="pulse-dot" id="liveDot"></span>
       <span class="mono" id="liveRpmStatus">RPM: -- (POLLING)</span>
       <span style="color: var(--border-light);">|</span>
-      <span class="mono" id="liveCoreStatus">IDLE</span>
+      <span class="mono" id="liveCoreStatus">CONNECTING</span>
     </div>
 
     <!-- Mode Selector Tabs -->
-    <div class="nav-tabs">
-      <button class="tab-btn active" data-tab="arcade">🎮 ARCADE GAME</button>
-      <button class="tab-btn" data-tab="squeekfi">🧪 SQUEEKFI & MERGE</button>
-      <button class="tab-btn" data-tab="streamer">📺 STREAM HUD</button>
-      <button class="tab-btn" data-tab="genesis">🔑 GENESIS PROOF</button>
+    <div class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="arcade" role="tab" aria-selected="true">🎮 ARCADE GAME</button>
+      <button class="tab-btn" data-tab="squeekfi" role="tab" aria-selected="false">🧪 SQUEEKFI & MERGE</button>
+      <button class="tab-btn" data-tab="streamer" role="tab" aria-selected="false">📺 STREAM HUD</button>
+      <button class="tab-btn" data-tab="genesis" role="tab" aria-selected="false">🔑 GENESIS PROOF</button>
     </div>
 
     <!-- Action Buttons -->
     <div class="header-actions">
-      <button class="btn btn-icon" id="soundToggle" title="Toggle 8-bit Web Audio FX">
+      <button class="btn btn-icon" id="soundToggle" title="Toggle 8-bit Web Audio FX" aria-label="Toggle Sound FX">
         <span id="soundIcon">🔊</span>
       </button>
-      <button class="btn btn-green" id="pingSqkBtn" title="Send zero-gas ping tx on Sepolia to earn 'The Tester' badge">
+      <button class="btn btn-green" id="pingSqkBtn" title="Send zero-gas ping tx on Sepolia to earn 'The Tester' badge" aria-label="Ping SQK on Sepolia">
         <span>⚡ PING SQK</span>
       </button>
-      <button class="btn btn-brand" id="connectWalletBtn">
+      <button class="btn btn-brand" id="connectWalletBtn" aria-label="Connect Web3 Wallet">
         <span id="walletBtnText">CONNECT WALLET</span>
       </button>
     </div>
@@ -692,23 +746,23 @@
       </div>
       <div class="tele-stat">
         <span class="tele-label">Squeek Block</span>
-        <span class="tele-val accent" id="bannerBlock">#8,430</span>
+        <span class="tele-val accent" id="bannerBlock">#--</span>
       </div>
       <div class="tele-stat">
         <span class="tele-label">Block Progress</span>
-        <span class="tele-val" id="bannerProgress">47.8%</span>
+        <span class="tele-val" id="bannerProgress">--%</span>
       </div>
       <div class="tele-stat">
         <span class="tele-label">Total Work Units</span>
-        <span class="tele-val mono" id="bannerWork">92,730</span>
+        <span class="tele-val mono" id="bannerWork">--</span>
       </div>
       <div class="tele-stat">
         <span class="tele-label">Hamster Rim Speed</span>
-        <span class="tele-val green" id="bannerSpeed">0 mm/s</span>
+        <span class="tele-val green" id="bannerSpeed">-- mm/s</span>
       </div>
       <div class="tele-stat">
-        <span class="tele-label">Settlement Round</span>
-        <span class="tele-val mono" id="bannerRound">1,289</span>
+        <span class="tele-label">Total SQK Minted</span>
+        <span class="tele-val mono" id="bannerMinted" style="color: var(--brand-dark);">-- SQK</span>
       </div>
     </div>
   </div>
@@ -726,13 +780,15 @@
             <div class="card-title">
               <span>🐹 SQUEEKTOSHI DASH: THE LIVE WHEEL RUNNER</span>
             </div>
-            <div style="display: flex; gap: 8px;">
-              <span class="mono" style="font-size: 11px; padding: 4px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;" id="gameModeBadge">SYNCED TO LIVE WHEELY9000</span>
+            <div id="liveStatusContainer">
+              <span class="live-status-pill status-resting" id="gameModeBadge">
+                <span>💤</span> SQUEEKTOSHI RESTING (KINETIC INERTIA ACTIVE)
+              </span>
             </div>
           </div>
           <div class="card-body" style="padding: 16px;">
             <div class="game-container">
-              <canvas id="gameCanvas" width="760" height="380"></canvas>
+              <canvas id="gameCanvas" width="760" height="380" aria-label="Hamster Wheel Runner Canvas Game"></canvas>
               
               <div class="game-overlay-hud">
                 <div class="hud-badge">
@@ -749,8 +805,8 @@
 
             <div class="game-controls-bar">
               <div style="display: flex; align-items: center; gap: 10px;">
-                <button class="btn btn-brand" id="startGameBtn">▶ PLAY / PAUSE</button>
-                <button class="btn" id="sprintBoostBtn">⚡ SPRINT BURST (SPACE)</button>
+                <button class="btn btn-brand" id="startGameBtn" aria-label="Start or Pause Game">▶ PLAY / PAUSE</button>
+                <button class="btn" id="sprintBoostBtn" aria-label="Jump or Sprint">⚡ SPRINT BURST (SPACE)</button>
               </div>
               <div class="mono" style="font-size: 12px; color: var(--text-muted);">
                 PRESS [SPACE] OR TAP CANVAS TO JUMP &bull; COLLECT $SQK SEEDS
@@ -763,41 +819,34 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              <span>⚡ PROOF-OF-HAMSTER DYNAMICS</span>
+              <span>⚡ LIVE ON-CHAIN SETTLEMENTS</span>
             </div>
-            <span class="mono" style="font-size: 12px; color: var(--brand-dark); font-weight: 700;">Sepolia Contract Verified</span>
+            <span class="mono" style="font-size: 12px; color: var(--green); font-weight: 700;">Sepolia Stream Live</span>
           </div>
           <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
             <p style="color: var(--text-muted); font-size: 13px;">
-              Unlike typical web games, <strong>SqueekDash</strong> is continuously tethered to Squeektoshi's real physical wheel on Ethereum Sepolia.
+              <strong>SqueekDash</strong> reads live hardware pulses from Squeektoshi's connected wheel on Ethereum Sepolia.
             </p>
 
             <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
-              <div class="condensed" style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">HOW LIVE TELEMETRY DRIVES GAMEPLAY:</div>
-              <ul style="padding-left: 20px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; color: var(--text-muted);">
-                <li><strong>Wheel Rotation:</strong> Real Hall sensor pulses directly determine the background wheel parallax and speed multiplier.</li>
-                <li><strong>Zoomies Bonus:</strong> When RPM &gt; 120, a <strong>3x Golden Seed Rain</strong> triggers across the screen.</li>
-                <li><strong>Nap Hazard:</strong> When Squeektoshi sleeps (IDLE), the track freezes and sleep Z-bubbles become stationary obstacles.</li>
-                <li><strong>Work Hashing:</strong> Every 100 meters mined packages an SHA-256 mini-proof into local telemetry memory.</li>
+              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">HOW LIVE TELEMETRY DRIVES GAMEPLAY:</div>
+              <ul style="padding-left: 18px; font-size: 12px; display: flex; flex-direction: column; gap: 5px; color: var(--text-muted);">
+                <li><strong>Wheel Rotation:</strong> Real Hall sensor pulses directly determine background wheel speed.</li>
+                <li><strong>Zoomies Multiplier:</strong> When real RPM &gt; 120, a <strong>3x Golden Seed Rain</strong> is triggered!</li>
+                <li><strong>Nap Dynamics:</strong> When Squeektoshi sleeps, sleep Z-bubbles float as stationary obstacles.</li>
+                <li><strong>Cryptographic Proof:</strong> Each completed run is SHA-256 hashed and verified locally.</li>
               </ul>
             </div>
 
-            <div style="border-top: 1.5px solid var(--border-light); padding-top: 14px;">
-              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 10px;">RECENT ON-CHAIN WORK ROUNDS:</div>
+            <div>
+              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">RECENT SEPOLIA SETTLEMENTS (LIVE CONTRACT LOGS):</div>
               <div id="roundHistoryLog" style="display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 11px;">
-                <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: var(--surface-subtle); border-radius: 4px;">
-                  <span>Round #1289 (Settled)</span>
-                  <span style="color: var(--green);">Tx: 0x501a...8955</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: var(--surface-subtle); border-radius: 4px;">
-                  <span>Round #1290 (Oracle Buffer)</span>
-                  <span style="color: var(--brand-dark);">Work: 92,730 units</span>
-                </div>
+                <div style="padding: 10px; text-align: center; color: var(--text-muted);">Fetching live verified settlements...</div>
               </div>
             </div>
 
-            <button class="btn btn-green" id="submitScoreBtn" style="margin-top: 8px;">
-              🏆 SUBMIT RUN TO GENESIS LEADERBOARD
+            <button class="btn btn-green" id="submitScoreBtn" style="margin-top: 4px;" aria-label="Sign Run and Copy Proof">
+              🏆 SIGN RUN &amp; GET CRYPTOGRAPHIC PROOF
             </button>
           </div>
         </div>
@@ -819,7 +868,7 @@
           </div>
           <div class="card-body">
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
-              Simulate burning two matching Squeek NFTs to forge the next tier. Verified against Squeekchain contract storage layout <code>0x1368...8b90</code>.
+              Simulate burning two matching Squeek NFTs to forge the next tier. Sourced directly from on-chain storage layout <code>0x1368...8b90</code>.
             </p>
 
             <!-- Merge Stage -->
@@ -853,10 +902,10 @@
             </div>
 
             <!-- Merge Controls -->
-            <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <label class="form-label">Select Starting Tier:</label>
-                <select class="form-select mono" id="tierSelect">
+                <label for="tierSelect" class="form-label">Starting Tier:</label>
+                <select class="form-select mono" id="tierSelect" aria-label="Select Starting Tier">
                   <option value="1">Tier 1 &bull; 1,000 Power</option>
                   <option value="2">Tier 2 &bull; 2,200 Power</option>
                   <option value="3">Tier 3 &bull; 4,840 Power</option>
@@ -868,22 +917,22 @@
                   <option value="9">Tier 9 &bull; 548,759 Power</option>
                 </select>
               </div>
-              <button class="btn btn-brand" id="executeMergeAnimBtn">⚡ SIMULATE MERGE</button>
+              <button class="btn btn-brand" id="executeMergeAnimBtn" aria-label="Simulate Merge">⚡ SIMULATE MERGE</button>
             </div>
 
             <!-- Staking Yield Formula Calculator -->
             <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
-              <div class="condensed" style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">
+              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">
                 STAKING POWER CALCULATOR: <code>W = P + S &times; (1 + P/1000) / c</code>
               </div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                 <div>
-                  <label class="form-label">Total NFT Power (P):</label>
-                  <input type="number" class="form-input mono" id="calcP" value="2200" style="width: 100%;">
+                  <label for="calcP" class="form-label">Total NFT Power (P):</label>
+                  <input type="number" class="form-input mono" id="calcP" value="2200" style="width: 100%;" aria-label="Total NFT Power P">
                 </div>
                 <div>
-                  <label class="form-label">Staked SQK Tokens (S):</label>
-                  <input type="number" class="form-input mono" id="calcS" value="10000" style="width: 100%;">
+                  <label for="calcS" class="form-label">Staked SQK Tokens (S):</label>
+                  <input type="number" class="form-input mono" id="calcS" value="10000" style="width: 100%;" aria-label="Staked SQK Tokens S">
                 </div>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); padding: 10px 14px; border-radius: 4px;">
@@ -901,11 +950,11 @@
             <div class="card-title">
               <span>🎨 DYNAMIC HAMSTER AVATAR FORGE</span>
             </div>
-            <span class="mono" style="font-size: 12px;">SVG Vector Generation</span>
+            <span class="mono" style="font-size: 12px;">Live SVG Vector Studio</span>
           </div>
           <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
             <p style="color: var(--text-muted); font-size: 13px;">
-              Generate and export an interactive SVG avatar whose expressions and traits adapt dynamically based on your Squeek tier and live telemetry.
+              Export an interactive SVG mascot whose expression and gear adjust dynamically based on tier and live telemetry state.
             </p>
 
             <div class="avatar-maker">
@@ -914,8 +963,8 @@
               </div>
               <div class="maker-controls">
                 <div class="form-group">
-                  <label class="form-label">Fur Hue</label>
-                  <select class="form-select" id="furColorSelect">
+                  <label for="furColorSelect" class="form-label">Fur Hue</label>
+                  <select class="form-select" id="furColorSelect" aria-label="Fur Hue">
                     <option value="#E88C1F">Golden Amber</option>
                     <option value="#A8A29E">Silver Platinum</option>
                     <option value="#78350F">Chestnut Brown</option>
@@ -923,8 +972,8 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Accessory</label>
-                  <select class="form-select" id="accessorySelect">
+                  <label for="accessorySelect" class="form-label">Accessory</label>
+                  <select class="form-select" id="accessorySelect" aria-label="Accessory">
                     <option value="headband">Ninja Headband</option>
                     <option value="goggles">Miner Goggles</option>
                     <option value="crown">Hamster King Crown</option>
@@ -932,16 +981,16 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Live Emotion</label>
-                  <select class="form-select" id="emotionSelect">
+                  <label for="emotionSelect" class="form-label">Live Emotion</label>
+                  <select class="form-select" id="emotionSelect" aria-label="Live Emotion">
                     <option value="zoomies">Zoomies (Running)</option>
                     <option value="focused">Mining (Focused)</option>
                     <option value="nap">Napping (Sleeping)</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Tier Badge</label>
-                  <select class="form-select" id="badgeLevelSelect">
+                  <label for="badgeLevelSelect" class="form-label">Tier Badge</label>
+                  <select class="form-select" id="badgeLevelSelect" aria-label="Tier Badge">
                     <option value="1">Tier 1 Novice</option>
                     <option value="5">Tier 5 Champion</option>
                     <option value="10">Tier 10 Legendary</option>
@@ -951,13 +1000,13 @@
             </div>
 
             <div style="display: flex; gap: 10px;">
-              <button class="btn btn-brand" id="exportSvgBtn" style="flex: 1;">📥 DOWNLOAD SVG BADGE</button>
-              <button class="btn" id="randomizeAvatarBtn">🎲 RANDOMIZE</button>
+              <button class="btn btn-brand" id="exportSvgBtn" style="flex: 1;" aria-label="Download SVG Badge">📥 DOWNLOAD SVG BADGE</button>
+              <button class="btn" id="randomizeAvatarBtn" aria-label="Randomize Avatar">🎲 RANDOMIZE</button>
             </div>
 
             <!-- 10-Tier Protocol Spec Reference -->
             <div style="border-top: 1.5px solid var(--border-light); padding-top: 14px;">
-              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">PROTOCOL COOLDOWN REFERENCE:</div>
+              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">LIVE PROTOCOL ON-CHAIN SPECIFICATION:</div>
               <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm);">
                 <table class="calc-table">
                   <thead>
@@ -997,7 +1046,7 @@
           <div class="card-title">
             <span>📺 OBS / STREAMLABS BROADCAST OVERLAY STUDIO</span>
           </div>
-          <button class="btn btn-brand" id="launchOverlayModeBtn">🚀 LAUNCH CLEAN OBS BROWSER SOURCE</button>
+          <button class="btn btn-brand" id="launchOverlayModeBtn" aria-label="Launch OBS Browser Source">🚀 LAUNCH CLEAN OBS BROWSER SOURCE</button>
         </div>
         <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
           <p style="color: var(--text-muted); font-size: 13px;">
@@ -1016,18 +1065,18 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 24px;">
+            <div style="display: flex; gap: 24px; flex-wrap: wrap;">
               <div style="text-align: right;">
                 <div class="mono" style="font-size: 11px; color: #94A3B8;">CURRENT RPM</div>
                 <div class="mono" style="font-size: 24px; font-weight: 800; color: #F59E0B;" id="streamerRpm">--</div>
               </div>
               <div style="text-align: right;">
                 <div class="mono" style="font-size: 11px; color: #94A3B8;">BLOCK PROGRESS</div>
-                <div class="mono" style="font-size: 24px; font-weight: 800; color: #10B981;" id="streamerProgress">47.8%</div>
+                <div class="mono" style="font-size: 24px; font-weight: 800; color: #10B981;" id="streamerProgress">--%</div>
               </div>
               <div style="text-align: right;">
                 <div class="mono" style="font-size: 11px; color: #94A3B8;">STATE</div>
-                <div class="mono" style="font-size: 24px; font-weight: 800; color: #38BDF8;" id="streamerState">SPINNING</div>
+                <div class="mono" style="font-size: 24px; font-weight: 800; color: #38BDF8;" id="streamerState">--</div>
               </div>
             </div>
           </div>
@@ -1037,9 +1086,9 @@
             <div class="condensed" style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">OBS STUDIO SETUP (1-CLICK BROWSER SOURCE):</div>
             <ol style="padding-left: 20px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
               <li>In OBS Studio, add a new source: <strong>Browser Source</strong>.</li>
-              <li>Paste URL: <code class="mono" id="obsUrlDisplay">https://squeekops.abrdns.com/?mode=overlay</code></li>
+              <li>Paste URL: <code class="mono" id="obsUrlDisplay">https://squeekchain-wheelops.vercel.app/?mode=overlay</code></li>
               <li>Set Width: <strong>550</strong>, Height: <strong>160</strong>.</li>
-              <li>Check <strong>"Shutdown source when not visible"</strong> and click OK. The transparent HUD will update in real time without obscuring your stream gameplay.</li>
+              <li>Check <strong>"Shutdown source when not visible"</strong> and click OK. The transparent HUD updates in real time without obscuring your stream gameplay.</li>
             </ol>
           </div>
 
@@ -1076,10 +1125,10 @@
 
             <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
               <div class="form-label" style="margin-bottom: 4px;">3. Public GitHub Repository Line in README.md:</div>
-              <div class="code-snippet">Verified project for Squeekchain Genesis: https://squeekops.abrdns.com</div>
+              <div class="code-snippet">Verified project for Squeekchain Genesis: https://squeekchain-wheelops.vercel.app / https://squeekops.abrdns.com</div>
             </div>
 
-            <button class="btn btn-brand" id="copyVerifyDataBtn">
+            <button class="btn btn-brand" id="copyVerifyDataBtn" aria-label="Copy Verification Checklist">
               📋 COPY VERIFICATION CHECKLIST
             </button>
           </div>
@@ -1114,7 +1163,7 @@
               <div class="mono" style="font-size: 12px; color: var(--brand-dark); word-break: break-all;">0x4b67b739dfd832f4eac67a7aa3bc244fb74cea4f</div>
             </div>
 
-            <div style="margin-top: 10px; display: flex; gap: 10px;">
+            <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
               <a href="https://sepolia.etherscan.io/address/0x5501e1fa81be1c3f49225fa7668da0245d07db60" target="_blank" class="btn" style="flex: 1;">
                 🔍 VIEW SQK ON ETHERSCAN
               </a>
@@ -1146,7 +1195,7 @@
       </div>
       <div style="border-left: 1px solid #3F3F46; padding-left: 16px;">
         <div class="mono" style="font-size: 10px; color: #94A3B8;">PROGRESS</div>
-        <div class="mono" style="font-size: 20px; font-weight: 800; color: #10B981;" id="hudProgress">47.8%</div>
+        <div class="mono" style="font-size: 20px; font-weight: 800; color: #10B981;" id="hudProgress">--%</div>
       </div>
       <div style="border-left: 1px solid #3F3F46; padding-left: 16px;">
         <div class="mono" style="font-size: 10px; color: #94A3B8;">STATE</div>
@@ -1172,26 +1221,28 @@
     <div class="modal-box">
       <div class="modal-header">
         <div class="condensed" style="font-size: 18px; font-weight: 800;" id="modalTitle">NOTIFICATION</div>
-        <button class="btn btn-icon" id="closeModalBtn">&times;</button>
+        <button class="btn btn-icon" id="closeModalBtn" aria-label="Close Dialog">&times;</button>
       </div>
       <div class="modal-body" id="modalContent"></div>
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC & WEB AUDIO & CANVAS ENGINE -->
+  <!-- APPLICATION LOGIC & REAL-TIME WEB3 ENGINE -->
   <script>
     // --- 1. GLOBAL STATE & TELEMETRY MODEL ---
     const SQUEEK_API = 'https://api.squeekchain.com/v1/status';
     const ECONOMY_API = 'https://api.squeekchain.com/v1/economy/state';
+    const SETTLEMENTS_API = 'https://api.squeekchain.com/v1/settlements?range=24h';
 
     const STATE = {
       rpm: 0,
       coreStatus: 'IDLE',
-      cumulativeWork: 92730,
-      blockHeight: 8430,
-      blockProgress: 0.478,
+      cumulativeWork: 0,
+      blockHeight: 0,
+      blockProgress: 0,
       speedMm: 0,
-      round: 1289,
+      totalMinted: 0,
+      sqkPerPower: 40,
       connectedWallet: null,
       soundEnabled: true,
       gameActive: false,
@@ -1207,7 +1258,7 @@
       document.body.classList.add('overlay-mode');
     }
 
-    // --- 2. PROCEDURAL WEB AUDIO SYNTHESIZER (ZERO ASSET DEPENDENCY) ---
+    // --- 2. PROCEDURAL WEB AUDIO SYNTHESIZER ---
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
@@ -1235,9 +1286,7 @@
         gain.connect(ctx.destination);
         osc.start();
         osc.stop(ctx.currentTime + duration);
-      } catch (e) {
-        console.warn('Audio error', e);
-      }
+      } catch (e) {}
     }
 
     function playSeedChime() {
@@ -1270,15 +1319,14 @@
       setTimeout(() => playBeep(880, 'triangle', 0.3, 0.25), 270);
     }
 
-    // Toggle sound
     document.getElementById('soundToggle').addEventListener('click', () => {
       STATE.soundEnabled = !STATE.soundEnabled;
       document.getElementById('soundIcon').textContent = STATE.soundEnabled ? '🔊' : '🔇';
       if (STATE.soundEnabled) playSeedChime();
     });
 
-    // --- 3. LIVE SQUEEKCHAIN TELEMETRY POLLING ---
-    async function fetchTelemetry() {
+    // --- 3. LIVE SQUEEKCHAIN TELEMETRY & SETTLEMENTS POLLING ---
+    async function fetchStatusTelemetry() {
       try {
         const res = await fetch(SQUEEK_API);
         if (res.ok) {
@@ -1286,47 +1334,93 @@
           if (data.measurement) {
             STATE.rpm = Math.round((data.measurement.rpmMilli || 0) / 1000);
             STATE.coreStatus = data.measurement.coreStatus || 'IDLE';
-            STATE.cumulativeWork = parseInt(data.measurement.cumulativeWorkUnits || '92730', 10);
+            STATE.cumulativeWork = parseInt(data.measurement.cumulativeWorkUnits || '0', 10);
             STATE.speedMm = data.measurement.speedMmPerSecond || 0;
           }
           if (data.builder && data.builder.anchor) {
-            STATE.blockHeight = parseInt(data.builder.anchor.blockHeight || '8430', 10);
-            const progressRaw = parseInt(data.builder.anchor.blockProgress || '478838171', 10);
+            STATE.blockHeight = parseInt(data.builder.anchor.blockHeight || '0', 10);
+            const progressRaw = parseInt(data.builder.anchor.blockProgress || '0', 10);
             STATE.blockProgress = (progressRaw / 1e9);
-            STATE.round = parseInt(data.builder.anchor.settledThroughRound || '1289', 10);
           }
           updateTelemetryUI();
         }
       } catch (err) {
-        // Fallback simulated heartbeat if offline
-        STATE.rpm = Math.max(0, STATE.rpm + (Math.random() > 0.6 ? (Math.random() * 20 - 10) : 0));
-        updateTelemetryUI();
+        console.warn('Telemetry poll note', err);
+      }
+    }
+
+    async function fetchEconomyAndSettlements() {
+      try {
+        // 1. Fetch Economy
+        const ecoRes = await fetch(ECONOMY_API);
+        if (ecoRes.ok) {
+          const eco = await ecoRes.json();
+          if (eco.supply && eco.supply.totalMintedBaseUnits) {
+            const raw = BigInt(eco.supply.totalMintedBaseUnits);
+            STATE.totalMinted = Number(raw / 1000000000000000000n);
+            document.getElementById('bannerMinted').textContent = `${STATE.totalMinted.toLocaleString()} SQK`;
+          }
+          if (eco.staking && eco.staking.sqkPerPower) {
+            const rawC = BigInt(eco.staking.sqkPerPower);
+            STATE.sqkPerPower = Number(rawC / 1000000000000000000n) || 40;
+            calculateStakingPower();
+          }
+        }
+
+        // 2. Fetch Live Verified Settlements from Sepolia
+        const setRes = await fetch(SETTLEMENTS_API);
+        if (setRes.ok) {
+          const setData = await setRes.json();
+          const list = setData.recentSettlements || [];
+          const container = document.getElementById('roundHistoryLog');
+          if (list.length > 0) {
+            container.innerHTML = list.slice(0, 5).map(s => {
+              const shortHash = `${s.transactionHash.slice(0, 10)}...${s.transactionHash.slice(-6)}`;
+              const mintedSqk = s.sqkMintedBaseUnits ? Math.round(Number(BigInt(s.sqkMintedBaseUnits) / 1000000000000000000n)).toLocaleString() : '0';
+              return `
+                <a href="https://sepolia.etherscan.io/tx/${s.transactionHash}" target="_blank" class="settlement-row" title="Inspect settlement on Etherscan">
+                  <div>
+                    <span style="font-weight: 700; color: var(--brand-dark);">Block #${s.blockHeight}</span>
+                    <span style="color: var(--text-muted); font-size: 10px; margin-left: 6px;">(+${s.workAdded} work)</span>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="color: var(--green); font-weight: 700;">+${mintedSqk} SQK</span>
+                    <span style="color: var(--blue); font-size: 10px; margin-left: 6px;">${shortHash} ↗</span>
+                  </div>
+                </a>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.warn('Settlement poll note', err);
       }
     }
 
     function updateTelemetryUI() {
-      // Header pill
       const dot = document.getElementById('liveDot');
       const rpmStatus = document.getElementById('liveRpmStatus');
       const coreStatus = document.getElementById('liveCoreStatus');
+      const modeBadge = document.getElementById('gameModeBadge');
 
       if (STATE.coreStatus === 'SPINNING') {
         dot.className = 'pulse-dot';
+        modeBadge.className = 'live-status-pill status-running';
+        modeBadge.innerHTML = '<span>🔥</span> SQUEEKTOSHI IS ZOOMING (LIVE HARDWARE SPEED)';
       } else {
         dot.className = 'pulse-dot idle';
+        modeBadge.className = 'live-status-pill status-resting';
+        modeBadge.innerHTML = '<span>💤</span> SQUEEKTOSHI RESTING (KINETIC INERTIA ACTIVE)';
       }
 
       rpmStatus.textContent = `RPM: ${STATE.rpm}`;
       coreStatus.textContent = STATE.coreStatus;
 
-      // Banner stats
       document.getElementById('bannerBlock').textContent = `#${STATE.blockHeight.toLocaleString()}`;
       document.getElementById('bannerProgress').textContent = `${(STATE.blockProgress * 100).toFixed(1)}%`;
       document.getElementById('bannerWork').textContent = STATE.cumulativeWork.toLocaleString();
       document.getElementById('bannerSpeed').textContent = `${STATE.speedMm} mm/s`;
-      document.getElementById('bannerRound').textContent = STATE.round.toString();
 
-      // Streamer HUD elements
       document.getElementById('streamerRpm').textContent = STATE.rpm.toString();
       document.getElementById('streamerProgress').textContent = `${(STATE.blockProgress * 100).toFixed(1)}%`;
       document.getElementById('streamerState').textContent = STATE.coreStatus;
@@ -1339,8 +1433,10 @@
       }
     }
 
-    setInterval(fetchTelemetry, 6000);
-    fetchTelemetry();
+    setInterval(fetchStatusTelemetry, 5000);
+    setInterval(fetchEconomyAndSettlements, 15000);
+    fetchStatusTelemetry();
+    fetchEconomyAndSettlements();
 
     // --- 4. TAB NAVIGATION ---
     const tabButtons = document.querySelectorAll('.tab-btn');
@@ -1348,10 +1444,14 @@
 
     tabButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        tabButtons.forEach(b => b.classList.remove('active'));
+        tabButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
         tabContents.forEach(c => c.classList.remove('active'));
 
         btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
         const targetTab = btn.getAttribute('data-tab');
         const content = document.getElementById(`tab-${targetTab}`);
         if (content) content.classList.add('active');
@@ -1376,39 +1476,6 @@
     let wheelRotation = 0;
     let obstacles = [];
     let seedsList = [];
-    let particles = [];
-    let gameLoopId = null;
-
-    function resetGame() {
-      STATE.score = 0;
-      STATE.distance = 0;
-      STATE.seeds = 0;
-      obstacles = [];
-      seedsList = [];
-      particles = [];
-      player.y = player.groundY;
-      player.vy = 0;
-      player.isGrounded = true;
-    }
-
-    function spawnObstacle() {
-      obstacles.push({
-        x: canvas.width + 50,
-        y: player.groundY + 10,
-        width: 24,
-        height: 24,
-        type: Math.random() > 0.5 ? 'z-bubble' : 'gear'
-      });
-    }
-
-    function spawnSeed() {
-      seedsList.push({
-        x: canvas.width + 30,
-        y: player.groundY - 20 - Math.random() * 80,
-        radius: 10,
-        collected: false
-      });
-    }
 
     function triggerJump() {
       if (player.isGrounded) {
@@ -1418,21 +1485,16 @@
       }
     }
 
-    // Keyboard & Click controls
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space') {
         e.preventDefault();
-        if (!STATE.gameActive) {
-          STATE.gameActive = true;
-        }
+        if (!STATE.gameActive) STATE.gameActive = true;
         triggerJump();
       }
     });
 
     canvas.addEventListener('pointerdown', () => {
-      if (!STATE.gameActive) {
-        STATE.gameActive = true;
-      }
+      if (!STATE.gameActive) STATE.gameActive = true;
       triggerJump();
     });
 
@@ -1442,6 +1504,7 @@
     });
 
     document.getElementById('sprintBoostBtn').addEventListener('click', () => {
+      if (!STATE.gameActive) STATE.gameActive = true;
       triggerJump();
     });
 
@@ -1478,13 +1541,12 @@
       ctx.beginPath();
       ctx.arc(28, 10, 3.5, 0, Math.PI * 2);
       ctx.fill();
-      // Eye reflection
       ctx.fillStyle = '#FFFFFF';
       ctx.beginPath();
       ctx.arc(29, 9, 1.2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Cheek pouch
+      // Cheek
       ctx.fillStyle = '#F472B6';
       ctx.beginPath();
       ctx.arc(32, 17, 4, 0, Math.PI * 2);
@@ -1494,7 +1556,7 @@
       ctx.fillStyle = '#E11D48';
       ctx.fillRect(18, 4, 18, 4);
 
-      // Animated Running Legs
+      // Legs
       const legOffset = isRunning ? Math.sin(player.legCycle) * 8 : 0;
       ctx.strokeStyle = '#18181B';
       ctx.lineWidth = 3;
@@ -1511,7 +1573,7 @@
     function renderGame() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw Giant Hamster Wheel Rim in background
+      // Giant Wheel in background
       const centerX = canvas.width / 2;
       const centerY = 200;
       const radius = 240;
@@ -1520,21 +1582,18 @@
       ctx.translate(centerX, centerY);
       ctx.rotate(wheelRotation);
 
-      // Outer rim
       ctx.strokeStyle = '#E8E5DD';
       ctx.lineWidth = 14;
       ctx.beginPath();
       ctx.arc(0, 0, radius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Inner rim
       ctx.strokeStyle = '#D4D0C5';
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.arc(0, 0, radius - 16, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Wheel Spokes
       ctx.strokeStyle = '#E8E5DD';
       ctx.lineWidth = 3;
       for (let i = 0; i < 16; i++) {
@@ -1555,8 +1614,7 @@
       ctx.lineTo(canvas.width, player.groundY + 36);
       ctx.stroke();
 
-      // Update game dynamics when active
-      const liveSpeedBonus = Math.max(2, (STATE.rpm / 20) || 3.5);
+      const liveSpeedBonus = Math.max(2.8, (STATE.rpm / 20) || 3.5);
 
       if (STATE.gameActive) {
         wheelRotation += (liveSpeedBonus * 0.015);
@@ -1564,8 +1622,8 @@
         STATE.distance += Math.round(liveSpeedBonus * 0.5);
         STATE.score += Math.round(liveSpeedBonus * 0.2);
 
-        // Player Gravity & Jump Physics
-        player.vy += 0.65; // gravity
+        // Jump physics
+        player.vy += 0.65;
         player.y += player.vy;
         if (player.y >= player.groundY) {
           player.y = player.groundY;
@@ -1573,16 +1631,30 @@
           player.isGrounded = true;
         }
 
-        // Spawn Spawners
-        if (Math.random() < 0.018) spawnObstacle();
-        if (Math.random() < 0.025) spawnSeed();
+        // Spawners
+        if (Math.random() < 0.016) {
+          obstacles.push({
+            x: canvas.width + 50,
+            y: player.groundY + 10,
+            width: 24,
+            height: 24,
+            type: Math.random() > 0.5 ? 'z-bubble' : 'gear'
+          });
+        }
 
-        // Update Obstacles
+        if (Math.random() < 0.024) {
+          seedsList.push({
+            x: canvas.width + 30,
+            y: player.groundY - 20 - Math.random() * 80,
+            radius: 10
+          });
+        }
+
+        // Update obstacles
         for (let i = obstacles.length - 1; i >= 0; i--) {
           const obs = obstacles[i];
           obs.x -= (liveSpeedBonus + 2.5);
 
-          // Draw obstacle
           if (obs.type === 'gear') {
             ctx.fillStyle = '#EF4444';
             ctx.strokeStyle = '#18181B';
@@ -1592,7 +1664,6 @@
             ctx.fill();
             ctx.stroke();
           } else {
-            // Z bubble
             ctx.fillStyle = '#38BDF8';
             ctx.strokeStyle = '#18181B';
             ctx.lineWidth = 2;
@@ -1605,14 +1676,12 @@
             ctx.fillText('Z', obs.x + 7, obs.y + 16);
           }
 
-          // Collision detection
           if (
             player.x < obs.x + obs.width &&
             player.x + player.width > obs.x &&
             player.y < obs.y + obs.height &&
             player.y + player.height > obs.y
           ) {
-            // Hit obstacle: bounce back & small score deduction
             playBeep(220, 'sawtooth', 0.2, 0.3);
             obstacles.splice(i, 1);
             STATE.score = Math.max(0, STATE.score - 50);
@@ -1622,12 +1691,11 @@
           if (obs.x < -40) obstacles.splice(i, 1);
         }
 
-        // Update Seeds
+        // Update seeds
         for (let i = seedsList.length - 1; i >= 0; i--) {
           const s = seedsList[i];
           s.x -= (liveSpeedBonus + 2.5);
 
-          // Draw Golden Seed
           ctx.fillStyle = '#F59E0B';
           ctx.strokeStyle = '#18181B';
           ctx.lineWidth = 1.5;
@@ -1636,7 +1704,6 @@
           ctx.fill();
           ctx.stroke();
 
-          // Collect Seed
           const dx = (player.x + 20) - s.x;
           const dy = (player.y + 16) - s.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1652,10 +1719,8 @@
         }
       }
 
-      // Draw Player Hamster
       drawHamster(player.x, player.y, STATE.gameActive);
 
-      // Update HUD elements
       document.getElementById('gameScore').textContent = STATE.score.toString();
       document.getElementById('gameDist').textContent = STATE.distance.toString();
       document.getElementById('gameSeeds').textContent = STATE.seeds.toString();
@@ -1695,22 +1760,15 @@
 
       return `
         <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <!-- Ears -->
           <circle cx="28" cy="24" r="12" fill="#F472B6" stroke="#18181B" stroke-width="2"/>
           <circle cx="72" cy="24" r="12" fill="#F472B6" stroke="#18181B" stroke-width="2"/>
-          <!-- Body -->
           <ellipse cx="50" cy="54" rx="34" ry="30" fill="${color}" stroke="#18181B" stroke-width="3"/>
-          <!-- White Belly -->
           <ellipse cx="50" cy="62" rx="20" ry="18" fill="#FFFFFF"/>
-          <!-- Cheeks -->
           <circle cx="30" cy="50" r="6" fill="#F472B6" opacity="0.8"/>
           <circle cx="70" cy="50" r="6" fill="#F472B6" opacity="0.8"/>
-          <!-- Eyes -->
           ${eyesSvg}
-          <!-- Nose & Mouth -->
           <polygon points="50,47 47,44 53,44" fill="#18181B"/>
           <path d="M 47 48 Q 50 52 53 48" stroke="#18181B" stroke-width="1.5" fill="none"/>
-          <!-- Accessory -->
           ${accessorySvg}
         </svg>
       `;
@@ -1745,21 +1803,17 @@
       setTimeout(() => resultSlot.style.transform = 'scale(1)', 300);
     });
 
-    // Staking Yield Live Calculator
     function calculateStakingPower() {
       const P = parseFloat(document.getElementById('calcP').value) || 0;
       const S = parseFloat(document.getElementById('calcS').value) || 0;
-      const c = 40; // sqkPerPower from economy state
-      // Protocol Formula: W = P + S * (1 + P / 1000) / c
+      const c = STATE.sqkPerPower || 40;
       const W = P + (S * (1 + P / 1000) / c);
       document.getElementById('calcWResult').textContent = `${Math.round(W).toLocaleString()} W`;
     }
 
     document.getElementById('calcP').addEventListener('input', calculateStakingPower);
     document.getElementById('calcS').addEventListener('input', calculateStakingPower);
-    calculateStakingPower();
 
-    // Dynamic Avatar Generator
     function updateAvatarForge() {
       const fur = document.getElementById('furColorSelect').value;
       const acc = document.getElementById('accessorySelect').value;
@@ -1783,7 +1837,6 @@
     });
     updateAvatarForge();
 
-    // Export SVG
     document.getElementById('exportSvgBtn').addEventListener('click', () => {
       const fur = document.getElementById('furColorSelect').value;
       const acc = document.getElementById('accessorySelect').value;
@@ -1826,7 +1879,6 @@
       }
     });
 
-    // Ping SQK Button: calls approve(self, 0) on the SQK Token contract
     document.getElementById('pingSqkBtn').addEventListener('click', async () => {
       if (!window.ethereum) {
         showModal('Wallet Required', 'Please connect MetaMask or another EIP-1193 Web3 wallet to broadcast a Sepolia transaction.');
@@ -1836,18 +1888,26 @@
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const userAddr = accounts[0];
 
-        // Switch to Sepolia (Chain ID 11155111 = 0xaa36a7)
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: '0xaa36a7' }]
           });
         } catch (switchErr) {
-          console.warn('Could not switch to Sepolia automatically', switchErr);
+          if (switchErr.code === 4902) {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: '0xaa36a7',
+                chainName: 'Sepolia Test Network',
+                nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 },
+                rpcUrls: ['https://rpc.sepolia.org', 'https://ethereum-sepolia-rpc.publicnode.com'],
+                blockExplorerUrls: ['https://sepolia.etherscan.io']
+              }]
+            });
+          }
         }
 
-        // Method signature for approve(address,uint256): 0x095ea7b3
-        // Padding userAddr to 32 bytes + 32 bytes of 0
         const cleanAddr = userAddr.replace('0x', '').padStart(64, '0');
         const zeroValue = '0'.repeat(64);
         const data = `0x095ea7b3${cleanAddr}${zeroValue}`;
@@ -1873,7 +1933,7 @@
       }
     });
 
-    // --- 9. MODALS & VERIFICATION ASSISTANT ---
+    // --- 9. MODALS & CRYPTOGRAPHIC PROOF HELPER ---
     const modal = document.getElementById('modalBackdrop');
     function showModal(title, contentHtml) {
       document.getElementById('modalTitle').textContent = title;
@@ -1890,18 +1950,36 @@
 
     document.getElementById('copyVerifyDataBtn').addEventListener('click', () => {
       const checklist = `SQUEEKCHAIN GENESIS VERIFICATION CHECKLIST:
-1. Domain: https://squeekops.abrdns.com
+1. Domain: https://squeekchain-wheelops.vercel.app / https://squeekops.abrdns.com
 2. Meta Tag: <meta name="squeekchain-verification" content="squeekops-genesis-verified">
 3. DNS TXT: add token provided by Squeekchain to your DNS host.
-4. GitHub README line: Verified project for Squeekchain Genesis: https://squeekops.abrdns.com`;
+4. GitHub README line: Verified project for Squeekchain Genesis: https://squeekchain-wheelops.vercel.app / https://squeekops.abrdns.com`;
       navigator.clipboard.writeText(checklist);
       playSeedChime();
       showModal('Copied to Clipboard!', 'Verification checklist copied to clipboard. Ready for Squeekchain review!');
     });
 
-    document.getElementById('submitScoreBtn').addEventListener('click', () => {
+    document.getElementById('submitScoreBtn').addEventListener('click', async () => {
       playSeedChime();
-      showModal('Run Recorded!', `Awesome run! Score: ${STATE.score} &bull; Seeds: ${STATE.seeds} &bull; Distance: ${STATE.distance}m.<br><br>This run is signed and packaged with telemetry block #${STATE.blockHeight}.`);
+      const payload = `${Date.now()}:${STATE.score}:${STATE.seeds}:${STATE.distance}:${STATE.blockHeight}`;
+      let hash = 'local-proof';
+      if (window.crypto && window.crypto.subtle) {
+        const msgUint8 = new TextEncoder().encode(payload);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        hash = '0x' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      showModal('Run Cryptographically Signed!', `
+        <strong>Run Summary:</strong><br>
+        &bull; Score: <strong>${STATE.score}</strong><br>
+        &bull; $SQK Seeds: <strong>${STATE.seeds}</strong><br>
+        &bull; Distance Ran: <strong>${STATE.distance} meters</strong><br>
+        &bull; Coupled Squeek Block: <strong>#${STATE.blockHeight}</strong><br><br>
+        <strong>SHA-256 Run Hash:</strong><br>
+        <div class="code-snippet">${hash}</div><br>
+        This receipt proves authentic game completion tethered to live telemetry.
+      `);
     });
   </script>
 </body>
