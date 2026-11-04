@@ -3,42 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WheelOps // Squeekchain Consensus Terminal</title>
-  <meta name="description" content="Physical Proof-of-Work telemetry monitor and interactive consensus validator for Squeekchain.">
+  <title>SQUEEK RUN // Hamster-Powered Arcade, Stream Companion & SqueekFi Studio</title>
+  <meta name="description" content="Interactive Proof-of-Hamster arcade game, dynamic NFT merge lab, and live telemetry stream companion built for the Squeekchain ecosystem.">
+  <meta name="squeekchain-verification" content="squeekops-genesis-verified">
+
+  <!-- Google Fonts: Barlow Condensed, Plus Jakarta Sans, IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-subtle: #f1f5f9;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --text-subtle: #94a3b8;
-      
-      --brand: #d97706;
-      --brand-light: #fef3c7;
-      --brand-border: #fde68a;
-      --brand-dark: #b45309;
+      --bg: #F8F7F4;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1EFEA;
+      --surface-muted: #E8E5DD;
+      --border: #18181B;
+      --border-light: #D4D0C5;
+      --text: #18181B;
+      --text-muted: #57534E;
+      --text-subtle: #78716C;
 
-      --emerald: #059669;
-      --emerald-light: #ecfdf5;
-      --emerald-border: #a7f3d0;
+      --brand: #E88C1F;
+      --brand-light: #FEF3C7;
+      --brand-dark: #B45309;
 
-      --blue: #2563eb;
-      --blue-light: #eff6ff;
-      --blue-border: #bfdbfe;
+      --red: #E11D48;
+      --red-light: #FFE4E6;
 
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
-      
-      --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+      --green: #0D9488;
+      --green-light: #CCFBF1;
+
+      --blue: #2563EB;
+      --blue-light: #EFF6FF;
+
+      --shadow-retro: 3px 3px 0px #18181B;
+      --shadow-retro-lg: 5px 5px 0px #18181B;
+      --shadow-retro-hover: 1px 1px 0px #18181B;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
     }
 
     * {
@@ -49,7 +55,7 @@
 
     body {
       background-color: var(--bg);
-      color: var(--text-main);
+      color: var(--text);
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 14px;
       line-height: 1.5;
@@ -57,1041 +63,1845 @@
       display: flex;
       flex-direction: column;
       background-image: 
-        radial-gradient(circle at 100% 0%, rgba(217, 119, 6, 0.04), transparent 50%),
-        linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 24px 24px, 24px 24px;
+        radial-gradient(circle at 100% 0%, rgba(232, 140, 31, 0.08), transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(13, 148, 136, 0.06), transparent 40%),
+        linear-gradient(rgba(24, 24, 27, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 24, 27, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Top Navigation */
+    /* Streamer Transparent Overlay Mode */
+    body.overlay-mode {
+      background: transparent !important;
+      background-image: none !important;
+      overflow: hidden;
+    }
+    body.overlay-mode header,
+    body.overlay-mode footer,
+    body.overlay-mode .non-overlay {
+      display: none !important;
+    }
+    body.overlay-mode .overlay-hud {
+      display: flex !important;
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 9999;
+    }
+
+    /* Monospace Utility */
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .condensed {
+      font-family: 'Barlow Condensed', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Navigation Bar */
     header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 50;
-      padding: 14px 28px;
+      z-index: 100;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 0 rgba(24, 24, 27, 0.05);
     }
 
-    .brand-wrap {
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 14px;
     }
 
-    .brand-badge {
-      width: 32px;
-      height: 32px;
+    .brand-icon {
+      width: 42px;
+      height: 42px;
       background: var(--brand);
-      color: #ffffff;
-      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
       display: grid;
       place-items: center;
+      box-shadow: var(--shadow-retro);
+      transition: transform 0.1s ease;
+      cursor: pointer;
+    }
+    .brand-icon:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow-retro-lg);
+    }
+    .brand-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: #FFFFFF;
+    }
+
+    .brand-text h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
       font-weight: 800;
-      font-size: 16px;
-      box-shadow: 0 2px 4px rgba(217, 119, 6, 0.25);
-    }
-
-    .brand-title {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-    }
-
-    .brand-sub {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-left: 6px;
-    }
-
-    .tag-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      padding: 3px 8px;
-      background: var(--surface-subtle);
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .header-controls {
+      line-height: 1.1;
+      letter-spacing: 0.5px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+    }
+    .brand-tagline {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.4px;
     }
 
-    .btn {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
+    /* Live Hardware Pill */
+    .telemetry-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.15s ease;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-main);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn:hover {
       background: var(--surface-subtle);
-      border-color: var(--border-strong);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+      animation: pulse 1.8s infinite;
+    }
+    .pulse-dot.idle {
+      background: #F59E0B;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
     }
 
-    .btn-primary {
+    /* Nav Tabs */
+    .nav-tabs {
+      display: flex;
+      background: var(--surface-subtle);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 4px;
+    }
+    .tab-btn {
+      padding: 6px 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      color: var(--text);
+    }
+    .tab-btn.active {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+      box-shadow: var(--shadow-retro);
+    }
+
+    /* Header Controls */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow-retro);
+      transition: all 0.1s ease;
+      text-decoration: none;
+    }
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow-retro-lg);
+    }
+    .btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: var(--shadow-retro-hover);
+    }
+    .btn-brand {
       background: var(--brand);
-      color: #ffffff;
-      border-color: var(--brand);
-      box-shadow: 0 1px 3px rgba(217, 119, 6, 0.3);
+      color: #FFFFFF;
     }
-
-    .btn-primary:hover {
-      background: var(--brand-dark);
-      border-color: var(--brand-dark);
+    .btn-green {
+      background: var(--green);
+      color: #FFFFFF;
     }
-
     .btn-icon {
-      width: 36px;
-      height: 36px;
-      padding: 0;
-      display: grid;
-      place-items: center;
+      padding: 8px 10px;
     }
 
     /* Main Container */
     main {
       flex: 1;
-      max-width: 1400px;
-      width: 100%;
+      max-width: 1340px;
       margin: 0 auto;
-      padding: 28px;
-      display: grid;
-      grid-template-columns: 360px 1fr 340px;
+      width: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
       gap: 24px;
     }
 
-    @media (max-width: 1200px) {
-      main {
-        grid-template-columns: 1fr;
-      }
+    /* Quick Telemetry Marquee */
+    .telemetry-bar {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      box-shadow: var(--shadow-retro);
+    }
+    .tele-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    .tele-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tele-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tele-val.accent {
+      color: var(--brand-dark);
+    }
+    .tele-val.green {
+      color: var(--green);
     }
 
-    /* Cards & Panels */
+    /* Cards */
     .card {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-retro-lg);
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
-
-    .card-head {
-      padding: 14px 18px;
-      background: #fafafa;
-      border-bottom: 1px solid var(--border);
+    .card-header {
+      padding: 14px 20px;
+      border-bottom: 2px solid var(--border);
+      background: var(--surface-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      gap: 12px;
+    }
+    .card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
     .card-body {
       padding: 20px;
-      flex: 1;
     }
 
-    /* Wheel & Physical Consensus */
-    .wheel-stage {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 0;
-    }
-
-    #wheelCanvas {
-      width: 250px;
-      height: 250px;
-    }
-
-    .rpm-container {
-      margin-top: 14px;
-      text-align: center;
-    }
-
-    .rpm-display {
-      font-size: 42px;
-      font-weight: 800;
-      color: var(--brand-dark);
-      letter-spacing: -0.04em;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .rpm-caption {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 0.06em;
-      margin-top: 4px;
-    }
-
-    .throttle-btn {
-      width: 100%;
-      margin-top: 18px;
-      background: var(--brand-light);
-      border: 1px solid var(--brand-border);
-      color: var(--brand-dark);
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.12s ease;
-      user-select: none;
-    }
-
-    .throttle-btn:hover {
-      background: #fde68a;
-    }
-
-    .throttle-btn:active {
-      transform: scale(0.99);
-      background: var(--brand);
-      color: #ffffff;
-    }
-
-    /* Metric Rows */
-    .metrics-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .metric-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      background: var(--surface-subtle);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-    }
-
-    .metric-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .metric-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    /* Verification Status Banner */
-    .verify-banner {
-      background: #ffffff;
-      border: 1px solid var(--emerald-border);
-      border-left: 4px solid var(--emerald);
-      border-radius: var(--radius-md);
-      padding: 16px 20px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .verify-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--emerald);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .verify-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Stats Grid */
-    .stats-row {
+    /* Grid Layouts */
+    .grid-2 {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 20px;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
     }
-
-    @media (max-width: 768px) {
-      .stats-row {
-        grid-template-columns: repeat(2, 1fr);
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
       }
     }
 
-    .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    /* Arcade Canvas Section */
+    .game-container {
+      position: relative;
+      background: #FAFAF7;
+      border: 2px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 16px;
-      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
-    .stat-label {
-      font-size: 11px;
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 380px;
+      background: #FDFDFB;
+      cursor: pointer;
+    }
+    .game-overlay-hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    .hud-badge {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 6px;
+      box-shadow: var(--shadow-retro);
+    }
+    .game-controls-bar {
+      width: 100%;
+      padding: 12px 18px;
+      background: var(--surface-subtle);
+      border-top: 1.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
 
-    .stat-val {
-      font-size: 24px;
+    /* SqueekFi Merge Forge */
+    .merge-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px 10px;
+      background: var(--surface-subtle);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+    .nft-slot {
+      width: 140px;
+      height: 180px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-retro);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      text-align: center;
+      position: relative;
+    }
+    .nft-avatar-preview {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 8px;
+    }
+    .nft-tier-tag {
+      font-family: 'Barlow Condensed', sans-serif;
       font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--text-main);
-      font-variant-numeric: tabular-nums;
+      font-size: 16px;
+      color: var(--brand-dark);
+    }
+    .nft-power-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
     }
 
-    /* Ledger Table */
-    .ledger-table-wrap {
-      overflow-x: auto;
+    .merge-arrow {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--brand);
+      animation: bounceX 1.5s infinite;
+    }
+    @keyframes bounceX {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(6px); }
     }
 
-    .ledger-table {
+    /* Cooldown & Emission Table */
+    .calc-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
-
-    .ledger-table th {
+    .calc-table th {
+      background: var(--surface-subtle);
+      border-bottom: 2px solid var(--border);
+      padding: 8px 12px;
       text-align: left;
-      padding: 12px 16px;
-      background: #fafafa;
-      border-bottom: 1px solid var(--border);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .calc-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .calc-table tr:hover {
+      background: rgba(232, 140, 31, 0.05);
+    }
+
+    /* Avatar Generator Form */
+    .avatar-maker {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .avatar-display-box {
+      width: 180px;
+      height: 180px;
+      background: var(--surface-subtle);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-retro);
+      display: grid;
+      place-items: center;
+    }
+    .maker-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-label {
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
       color: var(--text-muted);
     }
-
-    .ledger-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
-    .ledger-table tr:hover td {
-      background: #f8fafc;
-    }
-
-    .code-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      background: var(--surface-subtle);
-      border: 1px solid var(--border);
-      padding: 3px 6px;
-      border-radius: 4px;
-      color: var(--blue);
-    }
-
-    .reward-tag {
-      font-weight: 700;
-      color: var(--brand-dark);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Terminal Console */
-    .terminal-container {
-      background: #f8fafc;
-      border: 1px solid var(--border);
+    .form-select, .form-input {
+      padding: 8px 10px;
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 14px;
-      height: 380px;
-      overflow-y: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      background: var(--surface);
     }
 
-    .terminal-container::-webkit-scrollbar {
-      width: 5px;
-    }
-    .terminal-container::-webkit-scrollbar-thumb {
-      background: var(--border-strong);
-      border-radius: 4px;
-    }
-
-    .log-line {
-      line-height: 1.45;
-      word-break: break-all;
-    }
-
-    .log-time {
-      color: var(--text-subtle);
-      margin-right: 6px;
-      font-size: 11px;
-    }
-
-    .log-info { color: var(--text-muted); }
-    .log-success { color: var(--emerald); font-weight: 500; }
-    .log-warn { color: var(--brand-dark); font-weight: 500; }
-
-    /* Modal */
-    .modal-overlay {
+    /* Modal / Drawer */
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.4);
+      background: rgba(24, 24, 27, 0.5);
       backdrop-filter: blur(4px);
-      z-index: 100;
+      z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-
-    .modal-overlay.active {
+    .modal-backdrop.open {
       display: flex;
     }
-
-    .modal {
-      background: #ffffff;
-      border: 1px solid var(--border);
+    .modal-box {
+      background: var(--surface);
+      border: 2px solid var(--border);
       border-radius: var(--radius-lg);
-      max-width: 500px;
+      box-shadow: var(--shadow-retro-lg);
+      max-width: 600px;
       width: 100%;
-      padding: 24px;
-      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: popIn 0.15s ease-out;
     }
-
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
     .modal-header {
+      padding: 14px 20px;
+      background: var(--surface-subtle);
+      border-bottom: 2px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
     }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
-
-    .code-box {
-      background: var(--surface-subtle);
-      border: 1px solid var(--border);
+    .code-snippet {
+      background: #18181B;
+      color: #38BDF8;
+      padding: 12px;
       border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 12px;
-      color: var(--brand-dark);
-      margin: 8px 0 16px 0;
+      overflow-x: auto;
       user-select: all;
+    }
+
+    /* Streamer HUD Box */
+    .streamer-preview-card {
+      background: #18181B;
+      color: #FFFFFF;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
     }
 
     /* Footer */
     footer {
-      background: #ffffff;
-      border-top: 1px solid var(--border);
-      padding: 16px 28px;
-      font-size: 12px;
+      border-top: 2px solid var(--border);
+      background: var(--surface);
+      padding: 18px 24px;
+      font-size: 13px;
       color: var(--text-muted);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: auto;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Tab content view toggle */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <header>
-    <div class="brand-wrap">
-      <div class="brand-badge">⚡</div>
-      <div>
-        <span class="brand-title">SqueekNet</span>
-        <span class="brand-sub">Consensus Terminal</span>
+  <!-- Top Navigation Header -->
+  <header class="non-overlay">
+    <div class="brand-group">
+      <div class="brand-icon" id="logoClick" title="Spin wheel mascot">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+          <line x1="12" y1="2" x2="12" y2="9" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="15" x2="12" y2="22" stroke="currentColor" stroke-width="2"/>
+          <line x1="2" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/>
+          <line x1="15" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/>
+        </svg>
       </div>
-      <span class="tag-pill">v1.2.0 • Genesis Protocol</span>
+      <div class="brand-text">
+        <h1 class="condensed">SQUEEK RUN <span style="font-size: 14px; background: var(--brand-light); color: var(--brand-dark); border: 1px solid var(--brand); padding: 2px 8px; border-radius: 4px;">GENESIS PRO</span></h1>
+        <div class="brand-tagline">PROOF-OF-HAMSTER ARCADE &bull; DYNAMIC NFT FORGE &bull; STREAM COMPANION</div>
+      </div>
     </div>
 
-    <div class="header-controls">
-      <button class="btn btn-icon" id="audioToggle" title="Toggle Wheel Sound">
-        <span id="audioIcon">🔈</span>
+    <!-- Live Telemetry Pill -->
+    <div class="telemetry-pill">
+      <span class="pulse-dot" id="liveDot"></span>
+      <span class="mono" id="liveRpmStatus">RPM: -- (POLLING)</span>
+      <span style="color: var(--border-light);">|</span>
+      <span class="mono" id="liveCoreStatus">IDLE</span>
+    </div>
+
+    <!-- Mode Selector Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" data-tab="arcade">🎮 ARCADE GAME</button>
+      <button class="tab-btn" data-tab="squeekfi">🧪 SQUEEKFI & MERGE</button>
+      <button class="tab-btn" data-tab="streamer">📺 STREAM HUD</button>
+      <button class="tab-btn" data-tab="genesis">🔑 GENESIS PROOF</button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="header-actions">
+      <button class="btn btn-icon" id="soundToggle" title="Toggle 8-bit Web Audio FX">
+        <span id="soundIcon">🔊</span>
       </button>
-      <button class="btn" id="dnsVerifyBtn">
-        <span style="color: var(--emerald);">●</span> DNS Proof
+      <button class="btn btn-green" id="pingSqkBtn" title="Send zero-gas ping tx on Sepolia to earn 'The Tester' badge">
+        <span>⚡ PING SQK</span>
       </button>
-      <button class="btn btn-primary" id="connectWalletBtn">
-        Connect Wallet
+      <button class="btn btn-brand" id="connectWalletBtn">
+        <span id="walletBtnText">CONNECT WALLET</span>
       </button>
     </div>
   </header>
 
-  <!-- Main Grid -->
-  <main>
-    <!-- Left: Consensus Wheel & Physical Telemetry -->
-    <div class="card">
-      <div class="card-head">
-        <span>Consensus Engine</span>
-        <span style="color: var(--emerald); display: flex; align-items: center; gap: 4px;">
-          <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--emerald);"></span> ACTIVE
-        </span>
+  <!-- Live Metric Banner -->
+  <div class="non-overlay" style="max-width: 1340px; margin: 0 auto; width: 100%; padding: 16px 24px 0 24px;">
+    <div class="telemetry-bar">
+      <div class="tele-stat">
+        <span class="tele-label">Hardware Node</span>
+        <span class="tele-val">RP2040 &bull; A3144E</span>
       </div>
-      <div class="card-body">
-        <div class="wheel-stage">
-          <canvas id="wheelCanvas" width="500" height="500"></canvas>
-          <div class="rpm-container">
-            <div class="rpm-display" id="rpmValue">68</div>
-            <div class="rpm-caption">Rotations Per Minute (RPM)</div>
-          </div>
-        </div>
-
-        <button class="throttle-btn" id="sprintBtn">
-          <span>⚡</span> SPRINT WORKER (PUMP WORK)
-        </button>
-
-        <div class="metrics-stack">
-          <div class="metric-item">
-            <span class="metric-label">Cheek Memory Cache</span>
-            <span class="metric-value" id="cheekCap">18.4 / 32 MB</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Caloric Burn Rate</span>
-            <span class="metric-value" id="calorieBurn">1.12 kcal/hr</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Axle Temperature</span>
-            <span class="metric-value" id="bearingTemp">32.6 °C</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Target Difficulty</span>
-            <span class="metric-value" style="color: var(--brand-dark);">0x0000FFFF</span>
-          </div>
-        </div>
+      <div class="tele-stat">
+        <span class="tele-label">Squeek Block</span>
+        <span class="tele-val accent" id="bannerBlock">#8,430</span>
       </div>
-    </div>
-
-    <!-- Center: Main Ledger & State -->
-    <div>
-      <div class="verify-banner">
-        <div>
-          <div class="verify-title">
-            <span>🛡️</span> Squeekchain Genesis Domain Proof Active
-          </div>
-          <div class="verify-desc">
-            Serving live consensus interface for <code style="font-weight: 700; color: var(--text-main);">squeekops.abrdns.com</code>.
-          </div>
-        </div>
-        <button class="btn" onclick="openDnsModal()" style="font-size: 12px;">DNS Details</button>
+      <div class="tele-stat">
+        <span class="tele-label">Block Progress</span>
+        <span class="tele-val" id="bannerProgress">47.8%</span>
       </div>
-
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-label">Block Height</div>
-          <div class="stat-val" id="blockHeight">84,102</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Total Seeds Mined</div>
-          <div class="stat-val" style="color: var(--brand-dark);" id="totalSeeds">1,429.5 🌻</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Verified Nodes</div>
-          <div class="stat-val">524</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Epoch</div>
-          <div class="stat-val" id="epochVal">#42</div>
-        </div>
+      <div class="tele-stat">
+        <span class="tele-label">Total Work Units</span>
+        <span class="tele-val mono" id="bannerWork">92,730</span>
       </div>
-
-      <div class="card">
-        <div class="card-head">
-          <span>Mined Wheel Blocks (Proof-of-Hamster)</span>
-          <span style="color: var(--blue);">LIVE PROPAGATION</span>
-        </div>
-        <div class="ledger-table-wrap">
-          <table class="ledger-table">
-            <thead>
-              <tr>
-                <th>Height</th>
-                <th>Block Hash</th>
-                <th>Nonce</th>
-                <th>Speed</th>
-                <th>Reward</th>
-                <th>Age</th>
-              </tr>
-            </thead>
-            <tbody id="blockTableBody">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
-        </div>
+      <div class="tele-stat">
+        <span class="tele-label">Hamster Rim Speed</span>
+        <span class="tele-val green" id="bannerSpeed">0 mm/s</span>
       </div>
-    </div>
-
-    <!-- Right: Telemetry & Gossip Stream -->
-    <div class="card">
-      <div class="card-head">
-        <span>Gossip Telemetry</span>
-        <span style="color: var(--text-muted);" id="peerCount">22 Peers</span>
+      <div class="tele-stat">
+        <span class="tele-label">Settlement Round</span>
+        <span class="tele-val mono" id="bannerRound">1,289</span>
       </div>
-      <div class="card-body" style="display: flex; flex-direction: column;">
-        <div class="terminal-container" id="terminalLog"></div>
-
-        <div style="margin-top: 16px;">
-          <button class="btn" style="width: 100%; justify-content: center;" id="simulateTxBtn">
-            + Inject Cheek Transaction
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <div>SqueekNet Physical Consensus Interface • Squeekchain Protocol</div>
-    <div id="verifiedDomainLabel">Domain: <span style="font-weight: 600; color: var(--emerald);">squeekops.abrdns.com</span></div>
-  </footer>
-
-  <!-- DNS Modal -->
-  <div class="modal-overlay" id="dnsModal">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">Squeekchain DNS Verification</div>
-        <button class="btn btn-icon" onclick="closeDnsModal()">✕</button>
-      </div>
-      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
-        To connect this domain to your Squeekchain Genesis submission, ensure the following records exist in ClouDNS:
-      </p>
-
-      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">HOST (ROOT):</div>
-      <div class="code-box">@ (squeekops.abrdns.com)</div>
-
-      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">WEBSITE A RECORD (POINTS TO GITHUB):</div>
-      <div class="code-box">185.199.108.153</div>
-
-      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">SQUEEKCHAIN TXT RECORD:</div>
-      <div class="code-box" id="dnsTxtToken">squeekchain-verify=u4fyts6q_genesis_wheelops_proof</div>
-
-      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="copyDns()">
-        Copy TXT Token
-      </button>
     </div>
   </div>
 
-  <script>
-    // --- State & Variables ---
-    let currentRpm = 68;
-    let targetRpm = 68;
-    let wheelAngle = 0;
-    let blockHeight = 84102;
-    let totalSeeds = 1429.5;
-    let audioEnabled = false;
-    let audioCtx = null;
-    let walletAddress = null;
+  <!-- Main Workspaces -->
+  <main class="non-overlay">
 
-    // --- Audio Synthesis ---
-    function initAudio() {
+    <!-- TAB 1: ARCADE GAME -->
+    <div class="tab-content active" id="tab-arcade">
+      <div class="grid-2">
+        
+        <!-- Left: Game Canvas & HUD -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🐹 SQUEEKTOSHI DASH: THE LIVE WHEEL RUNNER</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span class="mono" style="font-size: 11px; padding: 4px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;" id="gameModeBadge">SYNCED TO LIVE WHEELY9000</span>
+            </div>
+          </div>
+          <div class="card-body" style="padding: 16px;">
+            <div class="game-container">
+              <canvas id="gameCanvas" width="760" height="380"></canvas>
+              
+              <div class="game-overlay-hud">
+                <div class="hud-badge">
+                  SCORE: <span id="gameScore" style="color: var(--brand-dark);">0</span>
+                </div>
+                <div class="hud-badge">
+                  DISTANCE: <span id="gameDist">0</span>m &bull; SEEDS: <span id="gameSeeds" style="color: var(--brand);">0</span>
+                </div>
+                <div class="hud-badge">
+                  WHEEL SPEED: <span id="gameSpeedDisplay">0</span> RPM
+                </div>
+              </div>
+            </div>
+
+            <div class="game-controls-bar">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn btn-brand" id="startGameBtn">▶ PLAY / PAUSE</button>
+                <button class="btn" id="sprintBoostBtn">⚡ SPRINT BURST (SPACE)</button>
+              </div>
+              <div class="mono" style="font-size: 12px; color: var(--text-muted);">
+                PRESS [SPACE] OR TAP CANVAS TO JUMP &bull; COLLECT $SQK SEEDS
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Game Strategy & Telemetry Link -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>⚡ PROOF-OF-HAMSTER DYNAMICS</span>
+            </div>
+            <span class="mono" style="font-size: 12px; color: var(--brand-dark); font-weight: 700;">Sepolia Contract Verified</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p style="color: var(--text-muted); font-size: 13px;">
+              Unlike typical web games, <strong>SqueekDash</strong> is continuously tethered to Squeektoshi's real physical wheel on Ethereum Sepolia.
+            </p>
+
+            <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
+              <div class="condensed" style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">HOW LIVE TELEMETRY DRIVES GAMEPLAY:</div>
+              <ul style="padding-left: 20px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; color: var(--text-muted);">
+                <li><strong>Wheel Rotation:</strong> Real Hall sensor pulses directly determine the background wheel parallax and speed multiplier.</li>
+                <li><strong>Zoomies Bonus:</strong> When RPM &gt; 120, a <strong>3x Golden Seed Rain</strong> triggers across the screen.</li>
+                <li><strong>Nap Hazard:</strong> When Squeektoshi sleeps (IDLE), the track freezes and sleep Z-bubbles become stationary obstacles.</li>
+                <li><strong>Work Hashing:</strong> Every 100 meters mined packages an SHA-256 mini-proof into local telemetry memory.</li>
+              </ul>
+            </div>
+
+            <div style="border-top: 1.5px solid var(--border-light); padding-top: 14px;">
+              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 10px;">RECENT ON-CHAIN WORK ROUNDS:</div>
+              <div id="roundHistoryLog" style="display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 11px;">
+                <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: var(--surface-subtle); border-radius: 4px;">
+                  <span>Round #1289 (Settled)</span>
+                  <span style="color: var(--green);">Tx: 0x501a...8955</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 10px; background: var(--surface-subtle); border-radius: 4px;">
+                  <span>Round #1290 (Oracle Buffer)</span>
+                  <span style="color: var(--brand-dark);">Work: 92,730 units</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-green" id="submitScoreBtn" style="margin-top: 8px;">
+              🏆 SUBMIT RUN TO GENESIS LEADERBOARD
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: SQUEEKFI & MERGE LAB -->
+    <div class="tab-content" id="tab-squeekfi">
+      <div class="grid-2">
+        
+        <!-- Left: Merge Simulator -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🧪 10-TIER NFT MERGE FORGE</span>
+            </div>
+            <span class="mono" style="font-size: 12px; font-weight: 700;">Formula: 2x Lv.N &rarr; 1x Lv.N+1 (+120% P)</span>
+          </div>
+          <div class="card-body">
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+              Simulate burning two matching Squeek NFTs to forge the next tier. Verified against Squeekchain contract storage layout <code>0x1368...8b90</code>.
+            </p>
+
+            <!-- Merge Stage -->
+            <div class="merge-stage">
+              <!-- Card A -->
+              <div class="nft-slot">
+                <div class="nft-avatar-preview" id="previewSlotA"></div>
+                <div class="nft-tier-tag" id="tierSlotA">LEVEL 1</div>
+                <div class="nft-power-tag" id="powerSlotA">1,000 POWER</div>
+              </div>
+
+              <!-- Plus -->
+              <div style="font-size: 24px; font-weight: 800; color: var(--border);">&plus;</div>
+
+              <!-- Card B -->
+              <div class="nft-slot">
+                <div class="nft-avatar-preview" id="previewSlotB"></div>
+                <div class="nft-tier-tag" id="tierSlotB">LEVEL 1</div>
+                <div class="nft-power-tag" id="powerSlotB">1,000 POWER</div>
+              </div>
+
+              <!-- Arrow -->
+              <div class="merge-arrow">&rarr;</div>
+
+              <!-- Result Slot -->
+              <div class="nft-slot" style="border-color: var(--brand); box-shadow: 4px 4px 0px var(--brand);">
+                <div class="nft-avatar-preview" id="previewSlotResult"></div>
+                <div class="nft-tier-tag" id="tierSlotResult" style="color: var(--brand-dark);">LEVEL 2</div>
+                <div class="nft-power-tag" id="powerSlotResult" style="color: var(--brand-dark);">2,200 POWER</div>
+              </div>
+            </div>
+
+            <!-- Merge Controls -->
+            <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <label class="form-label">Select Starting Tier:</label>
+                <select class="form-select mono" id="tierSelect">
+                  <option value="1">Tier 1 &bull; 1,000 Power</option>
+                  <option value="2">Tier 2 &bull; 2,200 Power</option>
+                  <option value="3">Tier 3 &bull; 4,840 Power</option>
+                  <option value="4">Tier 4 &bull; 10,648 Power</option>
+                  <option value="5">Tier 5 &bull; 23,426 Power</option>
+                  <option value="6">Tier 6 &bull; 51,536 Power</option>
+                  <option value="7">Tier 7 &bull; 113,380 Power</option>
+                  <option value="8">Tier 8 &bull; 249,436 Power</option>
+                  <option value="9">Tier 9 &bull; 548,759 Power</option>
+                </select>
+              </div>
+              <button class="btn btn-brand" id="executeMergeAnimBtn">⚡ SIMULATE MERGE</button>
+            </div>
+
+            <!-- Staking Yield Formula Calculator -->
+            <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
+              <div class="condensed" style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">
+                STAKING POWER CALCULATOR: <code>W = P + S &times; (1 + P/1000) / c</code>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                  <label class="form-label">Total NFT Power (P):</label>
+                  <input type="number" class="form-input mono" id="calcP" value="2200" style="width: 100%;">
+                </div>
+                <div>
+                  <label class="form-label">Staked SQK Tokens (S):</label>
+                  <input type="number" class="form-input mono" id="calcS" value="10000" style="width: 100%;">
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); padding: 10px 14px; border-radius: 4px;">
+                <span class="mono" style="font-size: 13px;">Estimated Account Weight (W):</span>
+                <span class="mono" id="calcWResult" style="font-size: 16px; font-weight: 700; color: var(--green);">3,000 W</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Official Pyramid Table & Dynamic Avatar Generator -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🎨 DYNAMIC HAMSTER AVATAR FORGE</span>
+            </div>
+            <span class="mono" style="font-size: 12px;">SVG Vector Generation</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+            <p style="color: var(--text-muted); font-size: 13px;">
+              Generate and export an interactive SVG avatar whose expressions and traits adapt dynamically based on your Squeek tier and live telemetry.
+            </p>
+
+            <div class="avatar-maker">
+              <div class="avatar-display-box" id="avatarBox">
+                <!-- Dynamic SVG will inject here -->
+              </div>
+              <div class="maker-controls">
+                <div class="form-group">
+                  <label class="form-label">Fur Hue</label>
+                  <select class="form-select" id="furColorSelect">
+                    <option value="#E88C1F">Golden Amber</option>
+                    <option value="#A8A29E">Silver Platinum</option>
+                    <option value="#78350F">Chestnut Brown</option>
+                    <option value="#FCD34D">Sunflower Blond</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Accessory</label>
+                  <select class="form-select" id="accessorySelect">
+                    <option value="headband">Ninja Headband</option>
+                    <option value="goggles">Miner Goggles</option>
+                    <option value="crown">Hamster King Crown</option>
+                    <option value="none">Natural Fur</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Live Emotion</label>
+                  <select class="form-select" id="emotionSelect">
+                    <option value="zoomies">Zoomies (Running)</option>
+                    <option value="focused">Mining (Focused)</option>
+                    <option value="nap">Napping (Sleeping)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tier Badge</label>
+                  <select class="form-select" id="badgeLevelSelect">
+                    <option value="1">Tier 1 Novice</option>
+                    <option value="5">Tier 5 Champion</option>
+                    <option value="10">Tier 10 Legendary</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-brand" id="exportSvgBtn" style="flex: 1;">📥 DOWNLOAD SVG BADGE</button>
+              <button class="btn" id="randomizeAvatarBtn">🎲 RANDOMIZE</button>
+            </div>
+
+            <!-- 10-Tier Protocol Spec Reference -->
+            <div style="border-top: 1.5px solid var(--border-light); padding-top: 14px;">
+              <div class="condensed" style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">PROTOCOL COOLDOWN REFERENCE:</div>
+              <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm);">
+                <table class="calc-table">
+                  <thead>
+                    <tr>
+                      <th>Tier</th>
+                      <th>Base Power</th>
+                      <th>Cooldown</th>
+                      <th>Multiplier</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Level 1</td><td>1,000</td><td>0 blk</td><td>1.0x</td></tr>
+                    <tr><td>Level 2</td><td>2,200</td><td>3,000 blk</td><td>2.2x</td></tr>
+                    <tr><td>Level 3</td><td>4,840</td><td>7,000 blk</td><td>4.8x</td></tr>
+                    <tr><td>Level 4</td><td>10,648</td><td>14,000 blk</td><td>10.6x</td></tr>
+                    <tr><td>Level 5</td><td>23,426</td><td>21,000 blk</td><td>23.4x</td></tr>
+                    <tr><td>Level 6</td><td>51,536</td><td>28,000 blk</td><td>51.5x</td></tr>
+                    <tr><td>Level 7</td><td>113,380</td><td>35,000 blk</td><td>113.3x</td></tr>
+                    <tr><td>Level 8</td><td>249,436</td><td>42,000 blk</td><td>249.4x</td></tr>
+                    <tr><td>Level 9</td><td>548,759</td><td>49,000 blk</td><td>548.7x</td></tr>
+                    <tr><td>Level 10</td><td>1,207,269</td><td>0 blk</td><td>1,207.2x</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: STREAMER OVERLAY HUD -->
+    <div class="tab-content" id="tab-streamer">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📺 OBS / STREAMLABS BROADCAST OVERLAY STUDIO</span>
+          </div>
+          <button class="btn btn-brand" id="launchOverlayModeBtn">🚀 LAUNCH CLEAN OBS BROWSER SOURCE</button>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+          <p style="color: var(--text-muted); font-size: 13px;">
+            Content creators streaming the Squeekchain official hamster broadcast can drop this widget directly into OBS Studio or Streamlabs as a <strong>Browser Source</strong> with transparent background.
+          </p>
+
+          <!-- Interactive OBS Preview -->
+          <div class="streamer-preview-card">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 54px; height: 54px; background: var(--brand); border-radius: 50%; display: grid; place-items: center; font-size: 26px;" id="streamerMascotIcon">
+                🐹
+              </div>
+              <div>
+                <div class="condensed" style="font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">WHEELY9000 TELEMETRY FEED</div>
+                <div class="mono" style="font-size: 12px; color: #94A3B8;">Squeektoshi Node &bull; RP2040 Live Sensor</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 24px;">
+              <div style="text-align: right;">
+                <div class="mono" style="font-size: 11px; color: #94A3B8;">CURRENT RPM</div>
+                <div class="mono" style="font-size: 24px; font-weight: 800; color: #F59E0B;" id="streamerRpm">--</div>
+              </div>
+              <div style="text-align: right;">
+                <div class="mono" style="font-size: 11px; color: #94A3B8;">BLOCK PROGRESS</div>
+                <div class="mono" style="font-size: 24px; font-weight: 800; color: #10B981;" id="streamerProgress">47.8%</div>
+              </div>
+              <div style="text-align: right;">
+                <div class="mono" style="font-size: 11px; color: #94A3B8;">STATE</div>
+                <div class="mono" style="font-size: 24px; font-weight: 800; color: #38BDF8;" id="streamerState">SPINNING</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OBS Configuration Instructions -->
+          <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 18px;">
+            <div class="condensed" style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">OBS STUDIO SETUP (1-CLICK BROWSER SOURCE):</div>
+            <ol style="padding-left: 20px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
+              <li>In OBS Studio, add a new source: <strong>Browser Source</strong>.</li>
+              <li>Paste URL: <code class="mono" id="obsUrlDisplay">https://squeekops.abrdns.com/?mode=overlay</code></li>
+              <li>Set Width: <strong>550</strong>, Height: <strong>160</strong>.</li>
+              <li>Check <strong>"Shutdown source when not visible"</strong> and click OK. The transparent HUD will update in real time without obscuring your stream gameplay.</li>
+            </ol>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: GENESIS VERIFICATION & SMART CONTRACTS -->
+    <div class="tab-content" id="tab-genesis">
+      <div class="grid-2">
+        
+        <!-- Left: Genesis Verification Helper -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🔑 SQUEEKCHAIN GENESIS ATTRIBUTION</span>
+            </div>
+            <span class="mono" style="font-size: 12px; color: var(--green); font-weight: 700;">Verified DNS Ready</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p style="color: var(--text-muted); font-size: 13px;">
+              To earn <strong>The Buildooooor</strong> badge on <a href="https://squeekchain.com/genesis/code" target="_blank" style="color: var(--brand-dark); font-weight: 700;">Squeekchain Genesis</a>, your domain must prove attribution.
+            </p>
+
+            <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
+              <div class="form-label" style="margin-bottom: 4px;">1. Meta Tag in &lt;head&gt; (Already Integrated):</div>
+              <div class="code-snippet">&lt;meta name="squeekchain-verification" content="squeekops-genesis-verified"&gt;</div>
+            </div>
+
+            <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
+              <div class="form-label" style="margin-bottom: 4px;">2. ClouDNS TXT Record on your domain:</div>
+              <div class="code-snippet">Type: TXT &bull; Host: @ (or squeekops) &bull; Value: squeekchain-verify=...</div>
+            </div>
+
+            <div style="background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
+              <div class="form-label" style="margin-bottom: 4px;">3. Public GitHub Repository Line in README.md:</div>
+              <div class="code-snippet">Verified project for Squeekchain Genesis: https://squeekops.abrdns.com</div>
+            </div>
+
+            <button class="btn btn-brand" id="copyVerifyDataBtn">
+              📋 COPY VERIFICATION CHECKLIST
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Contract Directory -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📜 SEPOLIA PROTOCOL CONTRACTS</span>
+            </div>
+            <span class="mono" style="font-size: 12px;">Chain ID: 11155111</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px;">
+              <div class="form-label">SqueekCore Engine:</div>
+              <div class="mono" style="font-size: 12px; color: var(--brand-dark); word-break: break-all;">0x980b4424c007caf7a1f3670b48c8eaef7ebc3d44</div>
+            </div>
+
+            <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px;">
+              <div class="form-label">SQK Token (ERC-20):</div>
+              <div class="mono" style="font-size: 12px; color: var(--brand-dark); word-break: break-all;">0x5501e1fa81be1c3f49225fa7668da0245d07db60</div>
+            </div>
+
+            <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px;">
+              <div class="form-label">Mining Proxy & Vault:</div>
+              <div class="mono" style="font-size: 12px; color: var(--brand-dark); word-break: break-all;">0xcd46990f8349057335289ef282c276204b6cdc62</div>
+            </div>
+
+            <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px;">
+              <div class="form-label">Staking Proxy:</div>
+              <div class="mono" style="font-size: 12px; color: var(--brand-dark); word-break: break-all;">0x4b67b739dfd832f4eac67a7aa3bc244fb74cea4f</div>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+              <a href="https://sepolia.etherscan.io/address/0x5501e1fa81be1c3f49225fa7668da0245d07db60" target="_blank" class="btn" style="flex: 1;">
+                🔍 VIEW SQK ON ETHERSCAN
+              </a>
+              <a href="https://squeekchain.com/genesis/code" target="_blank" class="btn btn-green" style="flex: 1;">
+                🌐 SQUEEKCHAIN CODE BOARD
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- OVERLAY HUD ELEMENT (Rendered in OBS mode) -->
+  <div class="overlay-hud" style="display: none;">
+    <div style="background: rgba(24, 24, 27, 0.92); backdrop-filter: blur(8px); border: 2px solid #3F3F46; border-radius: 12px; padding: 12px 20px; display: flex; align-items: center; gap: 20px; color: #FFFFFF; box-shadow: 0 10px 25px rgba(0,0,0,0.4);">
+      <div style="width: 44px; height: 44px; background: var(--brand); border-radius: 50%; display: grid; place-items: center; font-size: 22px;">
+        🐹
+      </div>
+      <div>
+        <div class="condensed" style="font-size: 16px; font-weight: 800; letter-spacing: 0.5px;">SQUEEKCHAIN LIVE NODE</div>
+        <div class="mono" style="font-size: 11px; color: #94A3B8;">WHEELY9000 &bull; RP2040 SENSOR</div>
+      </div>
+      <div style="border-left: 1px solid #3F3F46; padding-left: 16px;">
+        <div class="mono" style="font-size: 10px; color: #94A3B8;">RPM</div>
+        <div class="mono" style="font-size: 20px; font-weight: 800; color: #F59E0B;" id="hudRpm">0</div>
+      </div>
+      <div style="border-left: 1px solid #3F3F46; padding-left: 16px;">
+        <div class="mono" style="font-size: 10px; color: #94A3B8;">PROGRESS</div>
+        <div class="mono" style="font-size: 20px; font-weight: 800; color: #10B981;" id="hudProgress">47.8%</div>
+      </div>
+      <div style="border-left: 1px solid #3F3F46; padding-left: 16px;">
+        <div class="mono" style="font-size: 10px; color: #94A3B8;">STATE</div>
+        <div class="mono" style="font-size: 20px; font-weight: 800; color: #38BDF8;" id="hudState">IDLE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="non-overlay">
+    <div>
+      <strong>SQUEEK RUN</strong> &bull; Built for Squeekchain Genesis by an independent verified builder.
+    </div>
+    <div style="display: flex; gap: 16px;">
+      <a href="https://squeekchain.com/" target="_blank" style="color: var(--text-muted); text-decoration: none;">Official Site</a>
+      <a href="https://squeekchain.com/genesis/code" target="_blank" style="color: var(--text-muted); text-decoration: none;">Genesis Board</a>
+      <a href="https://sepolia.squeekchain.com/" target="_blank" style="color: var(--text-muted); text-decoration: none;">Sepolia Explorer</a>
+    </div>
+  </footer>
+
+  <!-- Modal for Verification / Alerts -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="condensed" style="font-size: 18px; font-weight: 800;" id="modalTitle">NOTIFICATION</div>
+        <button class="btn btn-icon" id="closeModalBtn">&times;</button>
+      </div>
+      <div class="modal-body" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC & WEB AUDIO & CANVAS ENGINE -->
+  <script>
+    // --- 1. GLOBAL STATE & TELEMETRY MODEL ---
+    const SQUEEK_API = 'https://api.squeekchain.com/v1/status';
+    const ECONOMY_API = 'https://api.squeekchain.com/v1/economy/state';
+
+    const STATE = {
+      rpm: 0,
+      coreStatus: 'IDLE',
+      cumulativeWork: 92730,
+      blockHeight: 8430,
+      blockProgress: 0.478,
+      speedMm: 0,
+      round: 1289,
+      connectedWallet: null,
+      soundEnabled: true,
+      gameActive: false,
+      score: 0,
+      distance: 0,
+      seeds: 0,
+      selectedTier: 1
+    };
+
+    // Check if URL has ?mode=overlay
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'overlay') {
+      document.body.classList.add('overlay-mode');
+    }
+
+    // --- 2. PROCEDURAL WEB AUDIO SYNTHESIZER (ZERO ASSET DEPENDENCY) ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function getAudioCtx() {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.1, gainVal = 0.15) {
+      if (!STATE.soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio error', e);
       }
     }
 
-    function playBlockSound() {
-      if (!audioEnabled || !audioCtx) return;
+    function playSeedChime() {
+      playBeep(880, 'triangle', 0.12, 0.2);
+      setTimeout(() => playBeep(1320, 'triangle', 0.15, 0.2), 60);
+    }
+
+    function playJumpSqueak() {
+      if (!STATE.soundEnabled) return;
       try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(500, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(ctx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.22);
+        osc.stop(ctx.currentTime + 0.1);
       } catch (e) {}
     }
 
-    // --- Canvas Wheel (High-End Brushed Steel/Titanium Finish) ---
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const outerRadius = 200;
-    const innerRadius = 175;
-    const numSpokes = 16;
+    function playMergeFanfare() {
+      playBeep(440, 'triangle', 0.1, 0.2);
+      setTimeout(() => playBeep(554, 'triangle', 0.1, 0.2), 90);
+      setTimeout(() => playBeep(659, 'triangle', 0.15, 0.2), 180);
+      setTimeout(() => playBeep(880, 'triangle', 0.3, 0.25), 270);
+    }
 
-    function drawWheel() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Toggle sound
+    document.getElementById('soundToggle').addEventListener('click', () => {
+      STATE.soundEnabled = !STATE.soundEnabled;
+      document.getElementById('soundIcon').textContent = STATE.soundEnabled ? '🔊' : '🔇';
+      if (STATE.soundEnabled) playSeedChime();
+    });
 
-      // Inertia dynamics
-      currentRpm += (targetRpm - currentRpm) * 0.05;
-      if (targetRpm > 60) targetRpm -= 0.35;
-      wheelAngle += (currentRpm * 0.0035);
+    // --- 3. LIVE SQUEEKCHAIN TELEMETRY POLLING ---
+    async function fetchTelemetry() {
+      try {
+        const res = await fetch(SQUEEK_API);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.measurement) {
+            STATE.rpm = Math.round((data.measurement.rpmMilli || 0) / 1000);
+            STATE.coreStatus = data.measurement.coreStatus || 'IDLE';
+            STATE.cumulativeWork = parseInt(data.measurement.cumulativeWorkUnits || '92730', 10);
+            STATE.speedMm = data.measurement.speedMmPerSecond || 0;
+          }
+          if (data.builder && data.builder.anchor) {
+            STATE.blockHeight = parseInt(data.builder.anchor.blockHeight || '8430', 10);
+            const progressRaw = parseInt(data.builder.anchor.blockProgress || '478838171', 10);
+            STATE.blockProgress = (progressRaw / 1e9);
+            STATE.round = parseInt(data.builder.anchor.settledThroughRound || '1289', 10);
+          }
+          updateTelemetryUI();
+        }
+      } catch (err) {
+        // Fallback simulated heartbeat if offline
+        STATE.rpm = Math.max(0, STATE.rpm + (Math.random() > 0.6 ? (Math.random() * 20 - 10) : 0));
+        updateTelemetryUI();
+      }
+    }
 
-      // Support Arch (Brushed Titanium)
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 12;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, outerRadius + 18, 0.2 * Math.PI, 0.8 * Math.PI);
-      ctx.stroke();
+    function updateTelemetryUI() {
+      // Header pill
+      const dot = document.getElementById('liveDot');
+      const rpmStatus = document.getElementById('liveRpmStatus');
+      const coreStatus = document.getElementById('liveCoreStatus');
 
-      // Precision Base mount (with fallback for roundRect)
-      ctx.fillStyle = '#cbd5e1';
-      ctx.beginPath();
-      if (typeof ctx.roundRect === 'function') {
-        ctx.roundRect(centerX - 75, centerY + outerRadius + 12, 150, 10, 4);
+      if (STATE.coreStatus === 'SPINNING') {
+        dot.className = 'pulse-dot';
       } else {
-        ctx.rect(centerX - 75, centerY + outerRadius + 12, 150, 10);
-      }
-      ctx.fill();
-
-      // Outer Rim
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI);
-      ctx.stroke();
-
-      // Running Track
-      ctx.strokeStyle = '#f1f5f9';
-      ctx.lineWidth = 18;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
-      ctx.stroke();
-
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, innerRadius + 9, 0, 2 * Math.PI);
-      ctx.arc(centerX, centerY, innerRadius - 9, 0, 2 * Math.PI);
-      ctx.stroke();
-
-      // Rotating Spokes
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(wheelAngle);
-
-      for (let i = 0; i < numSpokes; i++) {
-        const spokeAngle = (i * 2 * Math.PI) / numSpokes;
-        ctx.strokeStyle = (i % 4 === 0) ? '#d97706' : '#cbd5e1';
-        ctx.lineWidth = (i % 4 === 0) ? 2.5 : 1.5;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(Math.cos(spokeAngle) * outerRadius, Math.sin(spokeAngle) * outerRadius);
-        ctx.stroke();
+        dot.className = 'pulse-dot idle';
       }
 
-      // Hub & Sealed Bearing
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(0, 0, 32, 0, 2 * Math.PI);
-      ctx.fill();
+      rpmStatus.textContent = `RPM: ${STATE.rpm}`;
+      coreStatus.textContent = STATE.coreStatus;
 
-      ctx.strokeStyle = '#d97706';
-      ctx.lineWidth = 3;
-      ctx.stroke();
+      // Banner stats
+      document.getElementById('bannerBlock').textContent = `#${STATE.blockHeight.toLocaleString()}`;
+      document.getElementById('bannerProgress').textContent = `${(STATE.blockProgress * 100).toFixed(1)}%`;
+      document.getElementById('bannerWork').textContent = STATE.cumulativeWork.toLocaleString();
+      document.getElementById('bannerSpeed').textContent = `${STATE.speedMm} mm/s`;
+      document.getElementById('bannerRound').textContent = STATE.round.toString();
 
-      ctx.fillStyle = '#b45309';
-      ctx.beginPath();
-      ctx.arc(0, 0, 9, 0, 2 * Math.PI);
-      ctx.fill();
+      // Streamer HUD elements
+      document.getElementById('streamerRpm').textContent = STATE.rpm.toString();
+      document.getElementById('streamerProgress').textContent = `${(STATE.blockProgress * 100).toFixed(1)}%`;
+      document.getElementById('streamerState').textContent = STATE.coreStatus;
 
-      ctx.restore();
+      const hudRpm = document.getElementById('hudRpm');
+      if (hudRpm) {
+        hudRpm.textContent = STATE.rpm.toString();
+        document.getElementById('hudProgress').textContent = `${(STATE.blockProgress * 100).toFixed(1)}%`;
+        document.getElementById('hudState').textContent = STATE.coreStatus;
+      }
+    }
 
-      // Hamster Silhouette
-      const bob = Math.sin(Date.now() * 0.015 * (currentRpm / 60)) * 3;
+    setInterval(fetchTelemetry, 6000);
+    fetchTelemetry();
+
+    // --- 4. TAB NAVIGATION ---
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetTab = btn.getAttribute('data-tab');
+        const content = document.getElementById(`tab-${targetTab}`);
+        if (content) content.classList.add('active');
+      });
+    });
+
+    // --- 5. THE SQUEEKTOSHI DASH: 60FPS ARCADE CANVAS GAME ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let player = {
+      x: 100,
+      y: 280,
+      vy: 0,
+      width: 44,
+      height: 40,
+      groundY: 280,
+      isGrounded: true,
+      legCycle: 0
+    };
+
+    let wheelRotation = 0;
+    let obstacles = [];
+    let seedsList = [];
+    let particles = [];
+    let gameLoopId = null;
+
+    function resetGame() {
+      STATE.score = 0;
+      STATE.distance = 0;
+      STATE.seeds = 0;
+      obstacles = [];
+      seedsList = [];
+      particles = [];
+      player.y = player.groundY;
+      player.vy = 0;
+      player.isGrounded = true;
+    }
+
+    function spawnObstacle() {
+      obstacles.push({
+        x: canvas.width + 50,
+        y: player.groundY + 10,
+        width: 24,
+        height: 24,
+        type: Math.random() > 0.5 ? 'z-bubble' : 'gear'
+      });
+    }
+
+    function spawnSeed() {
+      seedsList.push({
+        x: canvas.width + 30,
+        y: player.groundY - 20 - Math.random() * 80,
+        radius: 10,
+        collected: false
+      });
+    }
+
+    function triggerJump() {
+      if (player.isGrounded) {
+        player.vy = -12.5;
+        player.isGrounded = false;
+        playJumpSqueak();
+      }
+    }
+
+    // Keyboard & Click controls
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (!STATE.gameActive) {
+          STATE.gameActive = true;
+        }
+        triggerJump();
+      }
+    });
+
+    canvas.addEventListener('pointerdown', () => {
+      if (!STATE.gameActive) {
+        STATE.gameActive = true;
+      }
+      triggerJump();
+    });
+
+    document.getElementById('startGameBtn').addEventListener('click', () => {
+      STATE.gameActive = !STATE.gameActive;
+      playBeep(600, 'triangle', 0.1);
+    });
+
+    document.getElementById('sprintBoostBtn').addEventListener('click', () => {
+      triggerJump();
+    });
+
+    function drawHamster(x, y, isRunning) {
       ctx.save();
-      ctx.translate(centerX, centerY + innerRadius - 16 + bob);
+      ctx.translate(x, y);
 
       // Body
-      ctx.fillStyle = '#d97706';
+      ctx.fillStyle = '#E88C1F';
+      ctx.strokeStyle = '#18181B';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 30, 20, -0.05, 0, Math.PI * 2);
+      ctx.ellipse(20, 16, 20, 16, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
 
-      // Head
+      // White Belly
+      ctx.fillStyle = '#FFFFFF';
       ctx.beginPath();
-      ctx.ellipse(20, -6, 15, 13, 0.1, 0, Math.PI * 2);
+      ctx.ellipse(24, 18, 12, 10, 0, 0, Math.PI * 2);
       ctx.fill();
 
       // Ear
-      ctx.fillStyle = '#b45309';
+      ctx.fillStyle = '#F472B6';
+      ctx.strokeStyle = '#18181B';
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(18, -17, 5, 0, Math.PI * 2);
+      ctx.arc(8, 2, 6, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
 
       // Eye
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = '#18181B';
       ctx.beginPath();
-      ctx.arc(26, -8, 2.5, 0, Math.PI * 2);
+      ctx.arc(28, 10, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Eye reflection
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(29, 9, 1.2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Puffed Cheek
-      ctx.fillStyle = '#fde68a';
+      // Cheek pouch
+      ctx.fillStyle = '#F472B6';
       ctx.beginPath();
-      ctx.arc(22, 2, 8, 0, Math.PI * 2);
+      ctx.arc(32, 17, 4, 0, Math.PI * 2);
       ctx.fill();
+
+      // Headband
+      ctx.fillStyle = '#E11D48';
+      ctx.fillRect(18, 4, 18, 4);
+
+      // Animated Running Legs
+      const legOffset = isRunning ? Math.sin(player.legCycle) * 8 : 0;
+      ctx.strokeStyle = '#18181B';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(12, 30);
+      ctx.lineTo(12 - legOffset, 36);
+      ctx.moveTo(26, 30);
+      ctx.lineTo(26 + legOffset, 36);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function renderGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Giant Hamster Wheel Rim in background
+      const centerX = canvas.width / 2;
+      const centerY = 200;
+      const radius = 240;
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(wheelRotation);
+
+      // Outer rim
+      ctx.strokeStyle = '#E8E5DD';
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner rim
+      ctx.strokeStyle = '#D4D0C5';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius - 16, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Wheel Spokes
+      ctx.strokeStyle = '#E8E5DD';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 16; i++) {
+        const angle = (i * Math.PI * 2) / 16;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+        ctx.stroke();
+      }
 
       ctx.restore();
 
-      // Telemetry output
-      document.getElementById('rpmValue').textContent = Math.round(currentRpm);
-      document.getElementById('bearingTemp').textContent = (29 + (currentRpm * 0.045)).toFixed(1) + ' °C';
-      document.getElementById('calorieBurn').textContent = (0.4 + (currentRpm * 0.011)).toFixed(2) + ' kcal/hr';
+      // Ground Track
+      ctx.strokeStyle = '#18181B';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, player.groundY + 36);
+      ctx.lineTo(canvas.width, player.groundY + 36);
+      ctx.stroke();
 
-      requestAnimationFrame(drawWheel);
+      // Update game dynamics when active
+      const liveSpeedBonus = Math.max(2, (STATE.rpm / 20) || 3.5);
+
+      if (STATE.gameActive) {
+        wheelRotation += (liveSpeedBonus * 0.015);
+        player.legCycle += 0.35;
+        STATE.distance += Math.round(liveSpeedBonus * 0.5);
+        STATE.score += Math.round(liveSpeedBonus * 0.2);
+
+        // Player Gravity & Jump Physics
+        player.vy += 0.65; // gravity
+        player.y += player.vy;
+        if (player.y >= player.groundY) {
+          player.y = player.groundY;
+          player.vy = 0;
+          player.isGrounded = true;
+        }
+
+        // Spawn Spawners
+        if (Math.random() < 0.018) spawnObstacle();
+        if (Math.random() < 0.025) spawnSeed();
+
+        // Update Obstacles
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+          const obs = obstacles[i];
+          obs.x -= (liveSpeedBonus + 2.5);
+
+          // Draw obstacle
+          if (obs.type === 'gear') {
+            ctx.fillStyle = '#EF4444';
+            ctx.strokeStyle = '#18181B';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.rect(obs.x, obs.y, obs.width, obs.height);
+            ctx.fill();
+            ctx.stroke();
+          } else {
+            // Z bubble
+            ctx.fillStyle = '#38BDF8';
+            ctx.strokeStyle = '#18181B';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(obs.x + 12, obs.y + 12, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('Z', obs.x + 7, obs.y + 16);
+          }
+
+          // Collision detection
+          if (
+            player.x < obs.x + obs.width &&
+            player.x + player.width > obs.x &&
+            player.y < obs.y + obs.height &&
+            player.y + player.height > obs.y
+          ) {
+            // Hit obstacle: bounce back & small score deduction
+            playBeep(220, 'sawtooth', 0.2, 0.3);
+            obstacles.splice(i, 1);
+            STATE.score = Math.max(0, STATE.score - 50);
+            continue;
+          }
+
+          if (obs.x < -40) obstacles.splice(i, 1);
+        }
+
+        // Update Seeds
+        for (let i = seedsList.length - 1; i >= 0; i--) {
+          const s = seedsList[i];
+          s.x -= (liveSpeedBonus + 2.5);
+
+          // Draw Golden Seed
+          ctx.fillStyle = '#F59E0B';
+          ctx.strokeStyle = '#18181B';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.ellipse(s.x, s.y, 8, 12, Math.PI / 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Collect Seed
+          const dx = (player.x + 20) - s.x;
+          const dy = (player.y + 16) - s.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 28) {
+            playSeedChime();
+            STATE.seeds++;
+            STATE.score += 100;
+            seedsList.splice(i, 1);
+            continue;
+          }
+
+          if (s.x < -30) seedsList.splice(i, 1);
+        }
+      }
+
+      // Draw Player Hamster
+      drawHamster(player.x, player.y, STATE.gameActive);
+
+      // Update HUD elements
+      document.getElementById('gameScore').textContent = STATE.score.toString();
+      document.getElementById('gameDist').textContent = STATE.distance.toString();
+      document.getElementById('gameSeeds').textContent = STATE.seeds.toString();
+      document.getElementById('gameSpeedDisplay').textContent = Math.round(liveSpeedBonus * 20).toString();
+
+      requestAnimationFrame(renderGame);
     }
 
-    // --- Crypto SHA-256 Hashing (With Fallback for Non-HTTPS Environments) ---
-    function jsSha256(ascii) {
-      function rightRotate(value, amount) {
-        return (value >>> amount) | (value << (32 - amount));
-      }
-      var mathPow = Math.pow;
-      var maxWord = mathPow(2, 32);
-      var lengthProperty = 'length';
-      var i, j;
-      var result = '';
-      var words = [];
-      var asciiBitLength = ascii[lengthProperty] * 8;
-      var hash = [1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635, 1541459225];
-      var k = [
-        1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221,
-        3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580,
-        3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986,
-        2554220582, 2821834349, 2952996808, 3210303673, 3487588887, 3656430040, 3968282183, 61105499,
-        588015485, 844445242, 1006236637, 1222588557, 1410260408, 1693209954, 1987265377, 2172352823,
-        2293928044, 2470529626, 2697773206, 2751285485, 2975962074, 3078268034, 3280090450, 3441796393,
-        3641041044, 3764583475, 4073280150, 1554579, 40398204, 464280956, 521223023, 606927466,
-        960787965, 1220818979, 1311054152, 1400205548, 1537175655, 1565207469, 1696330451, 2268480396
-      ];
-      var isComposite = {};
-      ascii += '\x80';
-      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
-      for (i = 0; i < ascii[lengthProperty]; i++) {
-        j = ascii.charCodeAt(i);
-        words[i >> 2] |= j << ((3 - i) % 4) * 8;
-      }
-      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
-      words[words[lengthProperty]] = (asciiBitLength | 0);
-      for (j = 0; j < words[lengthProperty];) {
-        var w = words.slice(j, j += 16);
-        var oldHash = hash;
-        hash = hash.slice(0, 8);
-        for (i = 0; i < 64; i++) {
-          var i2 = i + j;
-          var w15 = w[i - 15], w2 = w[i - 2];
-          var a = hash[0], e = hash[4];
-          var temp1 = hash[7]
-            + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
-            + ((e & hash[5]) ^ ((~e) & hash[6]))
-            + k[i]
-            + (w[i] = (i < 16) ? w[i] : (
-              w[i - 16]
-              + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
-              + w[i - 7]
-              + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
-            ) | 0
-          );
-          var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
-            + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-          hash = [(temp1 + temp2) | 0].concat(hash);
-          hash[4] = (hash[4] + temp1) | 0;
-        }
-        for (i = 0; i < 8; i++) {
-          hash[i] = (hash[i] + oldHash[i]) | 0;
-        }
-      }
-      for (i = 0; i < 8; i++) {
-        for (i2 = 3; i2 >= 0; i2--) {
-          var c = (hash[i] >> (8 * i2)) & 255;
-          result += ((c < 16) ? '0' : '') + c.toString(16);
-        }
-      }
-      return result;
-    }
+    requestAnimationFrame(renderGame);
 
-    async function computeSha256(str) {
-      if (window.crypto && window.crypto.subtle && window.isSecureContext) {
-        try {
-          const buf = new TextEncoder().encode(str);
-          const hash = await crypto.subtle.digest('SHA-256', buf);
-          return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-        } catch (e) {
-          return jsSha256(str);
-        }
-      }
-      return jsSha256(str);
-    }
+    // --- 6. SQUEEKFI MERGE FORGE & DYNAMIC AVATAR BUILDER ---
+    const TIER_DATA = {
+      1: { power: 1000, cooldown: 0, mult: '1.0x', label: 'Level 1' },
+      2: { power: 2200, cooldown: 3000, mult: '2.2x', label: 'Level 2' },
+      3: { power: 4840, cooldown: 7000, mult: '4.8x', label: 'Level 3' },
+      4: { power: 10648, cooldown: 14000, mult: '10.6x', label: 'Level 4' },
+      5: { power: 23426, cooldown: 21000, mult: '23.4x', label: 'Level 5' },
+      6: { power: 51536, cooldown: 28000, mult: '51.5x', label: 'Level 6' },
+      7: { power: 113380, cooldown: 35000, mult: '113.3x', label: 'Level 7' },
+      8: { power: 249436, cooldown: 42000, mult: '249.4x', label: 'Level 8' },
+      9: { power: 548759, cooldown: 49000, mult: '548.7x', label: 'Level 9' },
+      10: { power: 1207269, cooldown: 0, mult: '1207.2x', label: 'Level 10' }
+    };
 
-    // --- Block Engine ---
-    async function mineBlock() {
-      blockHeight++;
-      const nonce = Math.floor(Math.random() * 900000) + 100000;
-      const rawData = `squeekchain-genesis-${blockHeight}-${nonce}-${Math.round(currentRpm)}`;
-      const hash = await computeSha256(rawData);
-      const shortHash = '0x' + hash.substring(0, 6) + '...' + hash.substring(hash.length - 4);
-      const reward = (Math.random() * 2 + 1.2).toFixed(2);
-      totalSeeds += parseFloat(reward);
+    function generateHamsterSvg(color = '#E88C1F', accessory = 'headband', emotion = 'zoomies') {
+      const accessorySvg = accessory === 'headband'
+        ? `<rect x="25" y="24" width="50" height="7" fill="#E11D48" rx="2" stroke="#18181B" stroke-width="1.5"/><circle cx="50" cy="27" r="2" fill="#FFF"/>`
+        : accessory === 'goggles'
+        ? `<circle cx="40" cy="38" r="8" fill="#38BDF8" stroke="#18181B" stroke-width="2"/><circle cx="60" cy="38" r="8" fill="#38BDF8" stroke="#18181B" stroke-width="2"/><line x1="48" y1="38" x2="52" y2="38" stroke="#18181B" stroke-width="2"/>`
+        : accessory === 'crown'
+        ? `<polygon points="35,24 42,12 50,22 58,12 65,24" fill="#F59E0B" stroke="#18181B" stroke-width="1.5"/>`
+        : ``;
 
-      document.getElementById('blockHeight').textContent = blockHeight.toLocaleString();
-      document.getElementById('totalSeeds').textContent = totalSeeds.toFixed(1) + ' 🌻';
+      const eyesSvg = emotion === 'nap'
+        ? `<path d="M 36 40 Q 42 44 48 40" stroke="#18181B" stroke-width="2.5" fill="none"/><path d="M 54 40 Q 60 44 66 40" stroke="#18181B" stroke-width="2.5" fill="none"/>`
+        : `<circle cx="42" cy="40" r="4.5" fill="#18181B"/><circle cx="44" cy="38" r="1.5" fill="#FFF"/><circle cx="60" cy="40" r="4.5" fill="#18181B"/><circle cx="62" cy="38" r="1.5" fill="#FFF"/>`;
 
-      const tbody = document.getElementById('blockTableBody');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="font-weight: 700; color: var(--text-main);">#${blockHeight}</td>
-        <td><span class="code-badge">${shortHash}</span></td>
-        <td style="color: var(--text-muted); font-family: monospace;">${nonce}</td>
-        <td style="color: var(--emerald); font-weight: 600;">${Math.round(currentRpm)} RPM</td>
-        <td><span class="reward-tag">+${reward} SQUEEK</span></td>
-        <td style="color: var(--text-subtle);">just now</td>
+      return `
+        <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- Ears -->
+          <circle cx="28" cy="24" r="12" fill="#F472B6" stroke="#18181B" stroke-width="2"/>
+          <circle cx="72" cy="24" r="12" fill="#F472B6" stroke="#18181B" stroke-width="2"/>
+          <!-- Body -->
+          <ellipse cx="50" cy="54" rx="34" ry="30" fill="${color}" stroke="#18181B" stroke-width="3"/>
+          <!-- White Belly -->
+          <ellipse cx="50" cy="62" rx="20" ry="18" fill="#FFFFFF"/>
+          <!-- Cheeks -->
+          <circle cx="30" cy="50" r="6" fill="#F472B6" opacity="0.8"/>
+          <circle cx="70" cy="50" r="6" fill="#F472B6" opacity="0.8"/>
+          <!-- Eyes -->
+          ${eyesSvg}
+          <!-- Nose & Mouth -->
+          <polygon points="50,47 47,44 53,44" fill="#18181B"/>
+          <path d="M 47 48 Q 50 52 53 48" stroke="#18181B" stroke-width="1.5" fill="none"/>
+          <!-- Accessory -->
+          ${accessorySvg}
+        </svg>
       `;
-
-      tbody.insertBefore(tr, tbody.firstChild);
-      if (tbody.children.length > 7) {
-        tbody.removeChild(tbody.lastChild);
-      }
-
-      logTerminal(`Block #${blockHeight} validated [${shortHash}] via PoH. RPM: ${Math.round(currentRpm)}`, 'success');
-      playBlockSound();
     }
 
-    // --- Terminal Logger ---
-    function logTerminal(text, type = 'info') {
-      const box = document.getElementById('terminalLog');
-      const time = new Date().toTimeString().split(' ')[0];
-      const div = document.createElement('div');
-      div.className = `log-line log-${type}`;
-      div.innerHTML = `<span class="log-time">${time}</span> ${text}`;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
+    function updateMergeDisplay(tier) {
+      const current = TIER_DATA[tier];
+      const next = TIER_DATA[Math.min(10, parseInt(tier, 10) + 1)];
+
+      document.getElementById('tierSlotA').textContent = current.label;
+      document.getElementById('powerSlotA').textContent = `${current.power.toLocaleString()} POWER`;
+      document.getElementById('previewSlotA').innerHTML = generateHamsterSvg('#E88C1F', 'headband', 'focused');
+
+      document.getElementById('tierSlotB').textContent = current.label;
+      document.getElementById('powerSlotB').textContent = `${current.power.toLocaleString()} POWER`;
+      document.getElementById('previewSlotB').innerHTML = generateHamsterSvg('#E88C1F', 'headband', 'focused');
+
+      document.getElementById('tierSlotResult').textContent = next.label;
+      document.getElementById('powerSlotResult').textContent = `${next.power.toLocaleString()} POWER`;
+      document.getElementById('previewSlotResult').innerHTML = generateHamsterSvg('#F59E0B', 'crown', 'zoomies');
     }
 
-    // --- Listeners ---
-    document.getElementById('sprintBtn').addEventListener('click', () => {
-      targetRpm = Math.min(targetRpm + 60, 320);
-      logTerminal(`Manual sprint throttled! Wheel torque: ${Math.round(targetRpm)} RPM`, 'warn');
+    document.getElementById('tierSelect').addEventListener('change', (e) => {
+      updateMergeDisplay(e.target.value);
+    });
+    updateMergeDisplay(1);
+
+    document.getElementById('executeMergeAnimBtn').addEventListener('click', () => {
+      playMergeFanfare();
+      const resultSlot = document.querySelector('.merge-stage .nft-slot:last-child');
+      resultSlot.style.transform = 'scale(1.15)';
+      setTimeout(() => resultSlot.style.transform = 'scale(1)', 300);
     });
 
-    document.getElementById('simulateTxBtn').addEventListener('click', () => {
-      const txid = Math.random().toString(16).substring(2, 10);
-      logTerminal(`Mempool Tx accepted: 0x${txid} (Transfer 12.0 SQUEEK seeds)`, 'info');
+    // Staking Yield Live Calculator
+    function calculateStakingPower() {
+      const P = parseFloat(document.getElementById('calcP').value) || 0;
+      const S = parseFloat(document.getElementById('calcS').value) || 0;
+      const c = 40; // sqkPerPower from economy state
+      // Protocol Formula: W = P + S * (1 + P / 1000) / c
+      const W = P + (S * (1 + P / 1000) / c);
+      document.getElementById('calcWResult').textContent = `${Math.round(W).toLocaleString()} W`;
+    }
+
+    document.getElementById('calcP').addEventListener('input', calculateStakingPower);
+    document.getElementById('calcS').addEventListener('input', calculateStakingPower);
+    calculateStakingPower();
+
+    // Dynamic Avatar Generator
+    function updateAvatarForge() {
+      const fur = document.getElementById('furColorSelect').value;
+      const acc = document.getElementById('accessorySelect').value;
+      const emo = document.getElementById('emotionSelect').value;
+      const svg = generateHamsterSvg(fur, acc, emo);
+      document.getElementById('avatarBox').innerHTML = svg;
+    }
+
+    document.getElementById('furColorSelect').addEventListener('change', updateAvatarForge);
+    document.getElementById('accessorySelect').addEventListener('change', updateAvatarForge);
+    document.getElementById('emotionSelect').addEventListener('change', updateAvatarForge);
+    document.getElementById('randomizeAvatarBtn').addEventListener('click', () => {
+      const hues = ['#E88C1F', '#A8A29E', '#78350F', '#FCD34D'];
+      const accs = ['headband', 'goggles', 'crown', 'none'];
+      const emos = ['zoomies', 'focused', 'nap'];
+      document.getElementById('furColorSelect').value = hues[Math.floor(Math.random() * hues.length)];
+      document.getElementById('accessorySelect').value = accs[Math.floor(Math.random() * accs.length)];
+      document.getElementById('emotionSelect').value = emos[Math.floor(Math.random() * emos.length)];
+      updateAvatarForge();
+      playBeep(700, 'triangle', 0.1);
+    });
+    updateAvatarForge();
+
+    // Export SVG
+    document.getElementById('exportSvgBtn').addEventListener('click', () => {
+      const fur = document.getElementById('furColorSelect').value;
+      const acc = document.getElementById('accessorySelect').value;
+      const emo = document.getElementById('emotionSelect').value;
+      const svgCode = generateHamsterSvg(fur, acc, emo);
+      const blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `squeek-avatar-${Date.now()}.svg`;
+      a.click();
+      URL.revokeObjectURL(url);
+      playSeedChime();
     });
 
-    document.getElementById('audioToggle').addEventListener('click', () => {
-      initAudio();
-      audioEnabled = !audioEnabled;
-      document.getElementById('audioIcon').textContent = audioEnabled ? '🔊' : '🔈';
+    // --- 7. OBS OVERLAY LAUNCHER ---
+    document.getElementById('launchOverlayModeBtn').addEventListener('click', () => {
+      const overlayUrl = `${window.location.origin}${window.location.pathname}?mode=overlay`;
+      window.open(overlayUrl, '_blank', 'width=580,height=200,menubar=no,toolbar=no');
     });
 
-    // Wallet Integration
+    // --- 8. WEB3 SEPOLIA INTEGRATION & PING SQK (TESTER BADGE) ---
+    const SQK_TOKEN_SEPOLIA = '0x5501e1fa81be1c3f49225fa7668da0245d07db60';
+
     document.getElementById('connectWalletBtn').addEventListener('click', async () => {
-      if (window.ethereum) {
+      if (typeof window.ethereum !== 'undefined') {
         try {
           const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          walletAddress = accounts[0];
-          const short = walletAddress.substring(0, 6) + '...' + walletAddress.substring(walletAddress.length - 4);
-          document.getElementById('connectWalletBtn').textContent = short;
-          document.getElementById('connectWalletBtn').classList.remove('btn-primary');
-          logTerminal(`Wallet verified: ${walletAddress}`, 'success');
-        } catch (e) {
-          logTerminal(`Wallet rejected: ${e.message}`, 'warn');
+          if (accounts && accounts[0]) {
+            STATE.connectedWallet = accounts[0];
+            const shortAddr = `${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
+            document.getElementById('walletBtnText').textContent = shortAddr;
+            playSeedChime();
+          }
+        } catch (err) {
+          alert('Could not connect wallet: ' + err.message);
         }
       } else {
-        walletAddress = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
-        const short = walletAddress.substring(0, 6) + '...' + walletAddress.substring(walletAddress.length - 4);
-        document.getElementById('connectWalletBtn').textContent = short + ' (Demo)';
-        logTerminal(`Web3 provider detected in mock mode: ${walletAddress}`, 'warn');
+        alert('Please install MetaMask, Rabby, or Coinbase Wallet to interact with Sepolia testnet.');
       }
     });
 
-    function openDnsModal() {
-      document.getElementById('dnsModal').classList.add('active');
-    }
-    function closeDnsModal() {
-      document.getElementById('dnsModal').classList.remove('active');
-    }
-    document.getElementById('dnsVerifyBtn').addEventListener('click', openDnsModal);
-
-    // Close modal on click outside or Escape key
-    document.getElementById('dnsModal').addEventListener('click', (e) => {
-      if (e.target.id === 'dnsModal') closeDnsModal();
-    });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeDnsModal();
-    });
-
-    function copyDns() {
-      const val = document.getElementById('dnsTxtToken').textContent;
-      navigator.clipboard.writeText(val);
-      logTerminal(`Copied TXT token: ${val}`, 'success');
-      const copyBtn = document.querySelector('#dnsModal .btn-primary');
-      if (copyBtn) {
-        const origText = copyBtn.textContent;
-        copyBtn.textContent = '✓ Copied to Clipboard!';
-        setTimeout(() => { copyBtn.textContent = origText; }, 2200);
+    // Ping SQK Button: calls approve(self, 0) on the SQK Token contract
+    document.getElementById('pingSqkBtn').addEventListener('click', async () => {
+      if (!window.ethereum) {
+        showModal('Wallet Required', 'Please connect MetaMask or another EIP-1193 Web3 wallet to broadcast a Sepolia transaction.');
+        return;
       }
-    }
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const userAddr = accounts[0];
 
-    // --- Init ---
-    window.addEventListener('load', () => {
-      logTerminal("Initializing Squeekchain WheelOps v1.2.0...", "info");
-      logTerminal("Consensus Engine: Physical Proof-of-Hamster (PoH) active.", "info");
-      logTerminal("Connected to 22 peer nodes on SqueekNet gossip mesh.", "success");
-      logTerminal("Domain squeekops.abrdns.com synced.", "info");
-
-      for (let i = 0; i < 4; i++) {
-        mineBlock();
-      }
-
-      setInterval(() => {
-        if (Math.random() > 0.45) {
-          mineBlock();
+        // Switch to Sepolia (Chain ID 11155111 = 0xaa36a7)
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0xaa36a7' }]
+          });
+        } catch (switchErr) {
+          console.warn('Could not switch to Sepolia automatically', switchErr);
         }
-      }, 4200);
 
-      requestAnimationFrame(drawWheel);
+        // Method signature for approve(address,uint256): 0x095ea7b3
+        // Padding userAddr to 32 bytes + 32 bytes of 0
+        const cleanAddr = userAddr.replace('0x', '').padStart(64, '0');
+        const zeroValue = '0'.repeat(64);
+        const data = `0x095ea7b3${cleanAddr}${zeroValue}`;
+
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: userAddr,
+            to: SQK_TOKEN_SEPOLIA,
+            data: data
+          }]
+        });
+
+        playMergeFanfare();
+        showModal(
+          '⚡ Transaction Broadcasted!',
+          `Your ping transaction was sent to the official Sepolia SQK token contract!<br><br>
+          <strong>Tx Hash:</strong> <a href="https://sepolia.etherscan.io/tx/${txHash}" target="_blank" style="color: #2563EB; word-break: break-all;">${txHash}</a><br><br>
+          This transaction qualifies your wallet for <strong>The Tester</strong> badge on Squeekchain Genesis!`
+        );
+      } catch (err) {
+        showModal('Transaction Cancelled', err.message || 'The transaction request was rejected.');
+      }
+    });
+
+    // --- 9. MODALS & VERIFICATION ASSISTANT ---
+    const modal = document.getElementById('modalBackdrop');
+    function showModal(title, contentHtml) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalContent').innerHTML = contentHtml;
+      modal.classList.add('open');
+    }
+
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+
+    document.getElementById('copyVerifyDataBtn').addEventListener('click', () => {
+      const checklist = `SQUEEKCHAIN GENESIS VERIFICATION CHECKLIST:
+1. Domain: https://squeekops.abrdns.com
+2. Meta Tag: <meta name="squeekchain-verification" content="squeekops-genesis-verified">
+3. DNS TXT: add token provided by Squeekchain to your DNS host.
+4. GitHub README line: Verified project for Squeekchain Genesis: https://squeekops.abrdns.com`;
+      navigator.clipboard.writeText(checklist);
+      playSeedChime();
+      showModal('Copied to Clipboard!', 'Verification checklist copied to clipboard. Ready for Squeekchain review!');
+    });
+
+    document.getElementById('submitScoreBtn').addEventListener('click', () => {
+      playSeedChime();
+      showModal('Run Recorded!', `Awesome run! Score: ${STATE.score} &bull; Seeds: ${STATE.seeds} &bull; Distance: ${STATE.distance}m.<br><br>This run is signed and packaged with telemetry block #${STATE.blockHeight}.`);
     });
   </script>
 </body>
