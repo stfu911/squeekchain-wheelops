@@ -1,6 +1,6 @@
 # SQUEEK RUN // Hamster-Powered Arcade, Stream Companion & SqueekFi Studio
 
-Verified project for Squeekchain Genesis: https://squeekops.abrdns.com
+Verified project for Squeekchain Genesis: https://squeekchain-wheelops.vercel.app / https://squeekops.abrdns.com
 
 An interactive Proof-of-Hamster (PoH) arcade runner, dynamic NFT merge forge, and live telemetry OBS broadcast overlay built directly for the **Squeekchain** ecosystem.
 
